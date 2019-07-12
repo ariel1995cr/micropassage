@@ -18,16 +18,28 @@ class Viaje extends CI_Controller{
         echo json_encode($viajes);
     }
 
+    
+
     function BuscarPasajes(){
         $origen = $this->input->post('Origen');
         $destino = $this->input->post('Destino');
-        $idViaje = $this->input->post('idViaje');
+        $dia = $this->input->post('Dia');
+        
 
-        $viajes = $this->Viaje_model->buscarPasajes($origen,$destino,$idViaje);
+        $viajes = $this->Viaje_model->buscarPasajes($origen,$destino, $dia);
 
-        print_r($viajes);
+        echo json_encode($viajes);
     }
+
     
+    function obtenerFechasViajes(){
+        $origen = $this->input->post('Origen');
+        $destino = $this->input->post('Destino');
+
+        $viajes = $this->Viaje_model->obtenerFechaViajes($origen,$destino);
+
+        echo json_encode($viajes);
+    }
 
     /*
      * Listing of viajes

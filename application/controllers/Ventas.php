@@ -20,7 +20,20 @@ class Ventas extends CI_Controller {
 
 
         $this->load->view('venta/index.php',$data);
-	}
+    }
+    
+    function ElegirViaje(){
+        $datosViaje = array(
+            'fecha' => $this->input->get('fecha'),
+            'hora' => $this->input->get('origen'),
+            'origen' => $this->input->get('destino'),
+            'destino' => $this->input->get('hora')
+            );
+        
+        print_r($datosViaje);
+        
+    }
+    
 
 }
 

@@ -21,17 +21,27 @@ class Viaje_model extends CI_Model
         return $this->db->get('viaje')->result_object();
     }
 
-    function buscarPasajes($idOrigen, $idDestino, $idViaje)
+    function buscarPasajes($idOrigen, $idDestino, $dia)
     {
-        $this->db->select('*');
-        $this->db->from('viaje');
-        $this->db->join('ciudad', 'ciudad.idCiudad = viaje.idciudadestino', 'inner');
-        $this->db->join('frecuencia', 'frecuencia.idFrecuencia = viaje.idciudadestino', 'inner');
-        $this->db->join('ciudad', 'ciudad.idCiudad = viaje.idciudadestino');    
-        $this->db->join('ciudad', 'ciudad.idCiudad = viaje.idciudadorigen');
-        $this->db->where('idciudadorigen', $idOrigen);
-        $this->db->where('idciudaddestino', $idDestino);
-        return $this->db->get();
+       return $this->db
+                 ->where('idciudadorigen=', $idOrigen)
+                 ->where('idciudadestino=', $idDestino)
+                 ->where('dia', $dia)
+                 ->join('frecuencia', 'frecuencia.idViaje = viaje.idViaje', 'inner')
+                 ->join('ciudad', 'ciudad.idCiudad = viaje.idciudadorigen', 'inner')
+                 ->join('ciudad as nombreDestino', 'nombreDestino.idCiudad = viaje.idciudadestino', 'inner')
+                 ->get('viaje')->result_object();
+    }
+
+    function obtenerFechaViajes($idOrigen, $idDestino)
+    {
+        return $this->db
+                    ->distinct()
+                    ->select('dia')
+                    ->where('idciudadorigen=', $idOrigen)
+                    ->where('idciudadestino=', $idDestino)
+                    ->join('frecuencia', 'frecuencia.idViaje = viaje.idViaje', 'inner')
+                    ->get('viaje')->result_object();
     }
     
     
