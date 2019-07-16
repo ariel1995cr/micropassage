@@ -6,6 +6,10 @@ class Login extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
+        if($this->session->userdata('id'))
+        {
+            redirect('/index.php/Ventas', 'refresh');
+        }
         $this->load->library('form_validation');
         $this->load->library('encrypt');
         $this->load->model('login_model');
@@ -14,11 +18,11 @@ class Login extends CI_Controller {
 
     function index()
     {
-        //if($this->session->userdata('id'))
-        //{
-        //    redirect('/Login', 'refresh');
-        //}
-        $this->load->view('welcome_message');
+        if($this->session->userdata('id'))
+        {
+            redirect('/index.php/Ventas', 'refresh');
+        }
+        $this->load->view('login');
     }
 
     function validation()
@@ -30,12 +34,12 @@ class Login extends CI_Controller {
             $result = $this->login_model->can_login($this->input->post('email'), $this->input->post('password'));
             if($result == '')
             {
-                redirect('index.php/Welcome');
+                redirect('/index.php/Ventas');
             }
             else
             {
                 $this->session->set_flashdata('message',$result);
-                redirect('index.php/Welcome');
+                redirect('index.php');
             }
         }
         else

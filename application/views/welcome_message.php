@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ';
             }
             ?>
-            <img src="../resources/img/logo.jpg" alt="..." class="border border-primary rounded-circle shadow p-3 mt-5 bg-white rounded">
+            <img src="<?php echo base_url('/resources/img/logo.jpg')?>" alt="..." class="border border-primary rounded-circle shadow p-3 mt-5 bg-white rounded">
 
             <div class="card mx-auto" style="width: 40%;">
                 <div class="card-body align-middle">

@@ -183,8 +183,8 @@
 <section class="container">
     <article>
         <div class="jumbotron">
-            <h1 class="display-4">Hello, world!</h1>
-            <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+            <h1 class="display-4">Hola, <?php echo $this->session->userdata('nombreUsuario') ?>!</h1>
+            <p class="lead">Bienvenido aca podes gestionar todas las compras para tu viaje tal y como lo deseas.</p>
             <hr class="my-4">
             <div class="d-flex bd-highlight">
                 <div class="p-2 w-50 bd-highlight">

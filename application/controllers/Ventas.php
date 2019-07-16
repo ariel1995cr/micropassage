@@ -7,8 +7,9 @@ class Ventas extends CI_Controller {
     public function __construct()
     {
     	parent::__construct();
-
-
+        if (!$this->session->userdata('id')){
+            redirect(index.php/Login);
+        }
     	//Do your magic here
     }
 
@@ -18,7 +19,6 @@ class Ventas extends CI_Controller {
         $this->load->model('Ciudad_model');
 
         $data['ciudades'] = $this->Ciudad_model->obtener_ciudades();
-
 
         $this->load->view('venta/index.php',$data);
     }
