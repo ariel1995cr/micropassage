@@ -43,6 +43,29 @@ class Viaje_model extends CI_Model
                     ->join('frecuencia', 'frecuencia.idViaje = viaje.idViaje', 'inner')
                     ->get('viaje')->result_object();
     }
+
+    function obtenerViaje($idViaje, $idFrecuencia){
+        $this->db->select('viaje.idViaje,
+                           viaje.idciudadorigen,
+                           viaje.idciudadestino,
+                           viaje.idcolectivo,
+                           viaje.tarifa,
+                           frecuencia.dia,
+                           frecuencia.hora,
+                           frecuencia.idFrecuencia,
+                           colectivo.capacidadInferior,
+                           colectivo.capacidadSuperior,
+                           ciudadorigen.nombreCiudad as origen, 
+                           ciudaddestino.nombreCiudad as destino');
+        $this->db->join('frecuencia ', 'frecuencia.idViaje = viaje.idViaje', 'inner');
+        $this->db->join('colectivo ', 'viaje.idcolectivo = colectivo.idColectivo', 'inner');
+        $this->db->join('ciudad as ciudadorigen', 'viaje.idciudadorigen = ciudadorigen.idCiudad', 'inner');
+        $this->db->join('ciudad as ciudaddestino', 'viaje.idciudadestino = ciudaddestino.idCiudad', 'inner');
+        $this->db->where('frecuencia.idFrecuencia', $idFrecuencia);
+        $this->db->where('viaje.idViaje', $idViaje);
+        return $this->db->get('viaje')->result_object();
+
+    }
     
     
     /*

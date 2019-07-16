@@ -24,8 +24,6 @@ class Viaje extends CI_Controller{
         $origen = $this->input->post('Origen');
         $destino = $this->input->post('Destino');
         $dia = $this->input->post('Dia');
-        
-
         $viajes = $this->Viaje_model->buscarPasajes($origen,$destino, $dia);
 
         echo json_encode($viajes);
@@ -35,9 +33,7 @@ class Viaje extends CI_Controller{
     function obtenerFechasViajes(){
         $origen = $this->input->post('Origen');
         $destino = $this->input->post('Destino');
-
         $viajes = $this->Viaje_model->obtenerFechaViajes($origen,$destino);
-
         echo json_encode($viajes);
     }
 

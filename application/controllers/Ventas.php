@@ -8,6 +8,7 @@ class Ventas extends CI_Controller {
     {
     	parent::__construct();
 
+
     	//Do your magic here
     }
 
@@ -22,16 +23,22 @@ class Ventas extends CI_Controller {
         $this->load->view('venta/index.php',$data);
     }
     
-    function ElegirViaje(){
-        $datosViaje = array(
-            'fecha' => $this->input->get('fecha'),
-            'hora' => $this->input->get('origen'),
-            'origen' => $this->input->get('destino'),
-            'destino' => $this->input->get('hora')
-            );
-        
-        print_r($datosViaje);
-        
+    function Comprar($fecha,$idViaje,$idFrecuencia){
+        $data['datos'] = array(
+            'fecha' => $fecha,
+            'IdViaje' => $idViaje,
+            'IdFrecuencia' => $idFrecuencia
+        );
+
+
+        $this->load->model('Viaje_model');
+
+        $data['datosViaje'] = $this->Viaje_model->obtenerViaje($idViaje,$idFrecuencia);
+
+
+
+        $this->load->view('venta/comprar.php', $data);
+
     }
     
 

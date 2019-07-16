@@ -36,72 +36,11 @@
                     console.log(destinos);
                     $('#NombreDestino').prop("disabled",false);
                     $('#NombreDestino').append("<option value=\'"+destinos[0]['idciudadestino']+"\' >"+destinos[0]['nombreCiudad']+"</option>");
-                    $idViaje = destinos[0]['idViaje'];
+                    idViaje = destinos[0]['idViaje'];
         
                 });
                     
             });
-
-            /* $("#NombreDestino").change(function (e) {
-                e.preventDefault();
-                var Origen = $("#NombreOrigen").val();
-                var Destino = $("#NombreDestino").val();
-                var request = $.ajax({
-                    url: "Viaje/obtenerFechasViajes",
-                    method: "POST",
-                    data: { Origen : Origen, Destino : Destino},
-                    dataType: "html"
-                });
-                    
-                request.done(function( msg ) {
-                   
-                    var viajes = JSON.parse(msg);
-                    console.log(viajes);
-                    
-
-
-                    function DisableMonday(date) {
-
-                    var events = {};
-
-                    $.each(viajes,function(i,v){
-                        if(v.dia=="Lunes"){
-                            events[v.dia]='1';
-                        }
-                        
-                    })
-
-                    console.log(events);
-                    
-
-                    var day = date.getDay();
-                    var day2 = 2;
-                    // If day == 1 then it is MOnday
-                    if (day == 1 && day2==2) {
-
-                    return [false,false] ; 
-
-                    } else { 
-
-                    return [true] ;
-                    }
-
-            
-
-                    
-                    
-                    }
-
-
-                    $( "#datefechaPartida" ).datepicker({
-                        dateFormat: "dd-mm-yy",
-                        dayNamesMin: [ "Do", "Lu", "Ma", "Mie", "Ju", "Vi", "Sa" ],
-                        minDate: new Date(),
-                        beforeShowDay: DisableMonday
-                    });
-                });
-                    
-            }); */
 
             $( "#datefechaPartida" ).datepicker({
                         dateFormat: "dd-mm-yy",
@@ -178,6 +117,7 @@
                 console.log(diaViaje);
                 console.log(Destino);
                 console.log(FechaIda);
+                console.log(idViaje);
 
                 var request = $.ajax({
                     url: "Viaje/BuscarPasajes",
@@ -188,7 +128,6 @@
                     
                 request.done(function( msg ) {
                     var viajes = JSON.parse(msg);
-                    console.log(viajes);
                     
                     $("#resultado").html('<table class="table">'+
                                             '<thead>'+
@@ -206,6 +145,7 @@
 
                     $.each(viajes,function(i,v){
                         console.log(v);
+                        console.log(v['idciudadestino']);
                         $("#cuerpotabla").append('<tr>'+
                                                 '<td>'+v.dia+'</td>'+
                                                 '<td>'+$("#datefechaPartida").val()+'</td>'+
@@ -213,7 +153,7 @@
                                                 '<td>'+$("#NombreOrigen option:selected").text()+'</td>'+
                                                 '<td>'+$("#NombreDestino option:selected").text()+'</td>'+
                                                 '<td>'+v.tarifa+'</td>'+
-                                                '<td><a href="http://localhost/PassageSystem/index.php/Ventas/ElegirViaje?fecha='+$("#datefechaPartida").val()+'&origen='+$("#NombreOrigen").val()+'&destino='+$("#NombreDestino").val()+'&hora='+v.hora+'"><button type="button" class="btn btn-outline-primary">Elegir Viaje</button></td></a>'+
+                                                '<td><a href="http://localhost/PassageSystem/index.php/Ventas/Comprar/'+$("#datefechaPartida").val()+'/'+v.idViaje+'/'+v.idFrecuencia+'"><button type="button" class="btn btn-outline-primary">Elegir Viaje</button></td></a>'+
                                                 '</tr>');  
                         });
 
