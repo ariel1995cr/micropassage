@@ -55,22 +55,58 @@
 
 
                 </div>
-                <div class="card-footer text-muted">
-                    <table class="table table-borderless">
-                        <tbody>
+                <div class="card-footer text-muted d-flex">
+                    <table class="table table-borderless w-25">
+                        <thead class="thead-dark">
                         <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                            <th colspan="4">PLANTA ALTA</th>
                         </tr>
+                        </thead>
+
+                        <tbody>
                         <?php
-                        $x = 0;
-                        $fila = 0;
-                        for ($x;$x<$datosViaje[0]->capacidadSuperior;$x++){
-                            echo "<tr>" ;
-                            echo "<th>x</th>";
-                            echo"</tr>";
+                        $x = 1;
+                        echo "<tr>";
+                        for ($x;$x<$datosViaje[0]->capacidadSuperior+1;$x++){
+                            if($x%4==0){
+                                echo"<th>";
+                                echo $x;
+                                echo"</th>";
+                                echo"</tr>";
+                            } else {
+                                echo"<th>";
+                                echo $x;
+                                echo"</th>";
+                            }
+
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-borderless ml-3 w-25">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th colspan="4">PLANTA BAJA</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $x2 = 1;
+                        echo "<tr>";
+                        for ($x2;$x2<$datosViaje[0]->capacidadInferior+1;$x2++){
+                            $x++;
+                            if($x2%3==0){
+                                echo"<th>";
+                                echo $x;
+                                echo"</th>";
+                                echo"</tr>";
+                            } else {
+                                echo"<th>";
+                                echo $x;
+                                echo"</th>";
+                            }
+
                         }
                         ?>
                         </tbody>
