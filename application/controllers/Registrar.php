@@ -24,9 +24,14 @@ class Registrar extends CI_Controller {
 
     function validation()
     {
-        $this->form_validation->set_rules('name', 'Name', 'required|trim');
-        $this->form_validation->set_rules('email', 'Email Address', 'required|trim|valid_email|is_unique[Usuario.email]');
+        $this->form_validation->set_rules('nombres', 'Nombres', 'required|trim');
+        $this->form_validation->set_rules('apellido', 'Apellido', 'required|trim');
+        $this->form_validation->set_rules('dni', 'Dni', 'required|trim|is_unique[usuario.dni]|integer');
+        $this->form_validation->set_rules('telefono', 'Telefono', 'required|trim|integer');
+        $this->form_validation->set_rules('nombreUsuario', 'Nombre Usuario', 'required|trim');
+        $this->form_validation->set_rules('email', 'Email Address', 'required|trim|valid_email|is_unique[usuario.email]');
         $this->form_validation->set_rules('password', 'Password', 'required');
+        $this->form_validation->set_rules('pasajerofrecuente', 'pasajero frecuente', 'required');
         if($this->form_validation->run())
         {
             $verification_key = md5(rand());
@@ -35,7 +40,12 @@ class Registrar extends CI_Controller {
                 'nombreUsuario'  => $this->input->post('name'),
                 'email'  => $this->input->post('email'),
                 'password' => $encrypted_password,
-                'verification_key' => $verification_key
+                'verification_key' => $verification_key,
+                'nombres' => $this->input->post('nombres'),
+                'apellido' => $this->input->post('apellido'),
+                'dni' => $this->input->post('dni'),
+                'telefono' => $this->input->post('telefono'),
+                'pasajeroFrecuente' => $this->input->post('pasajeroFrecuente'),
             );
             $id = $this->Register_model->insert($data);
             if($id > 0)
@@ -70,8 +80,7 @@ class Registrar extends CI_Controller {
                 }
             }
         }
-        else
-        {
+            else {
             $this->index();
         }
     }

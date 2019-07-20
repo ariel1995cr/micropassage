@@ -22,7 +22,7 @@ class Login extends CI_Controller {
         {
             redirect('/index.php/Ventas', 'refresh');
         }
-        $this->load->view('login');
+        $this->load->view('welcome_message');
     }
 
     function validation()
@@ -39,7 +39,7 @@ class Login extends CI_Controller {
             else
             {
                 $this->session->set_flashdata('message',$result);
-                redirect('index.php');
+                print_r($result);
             }
         }
         else

@@ -19,6 +19,7 @@ class Login_model extends CI_Model
                         $this->session->set_userdata('id', $row->id);
                         $this->session->set_userdata('email', $email);
                         $this->session->set_userdata('nombreUsuario', $row->nombreUsuario);
+                        $this->session->set_userdata('Dni', $row->dni);
                     }
                     else
                     {

@@ -18,6 +18,14 @@ class Colectivo_model extends CI_Model
     {
         return $this->db->get_where('colectivo',array('idColectivo'=>$idColectivo))->row_array();
     }
+
+    function obtenerPasajes($idViaje,$idFrecuencia,$fecha)
+    {
+        $this->db->where('idViaje', $idViaje);
+        $this->db->where('idFrecuencia', $idFrecuencia);
+
+        return $this->db->get('pasaje')->result_object();
+    }
     
     /*
      * Get all colectivos count

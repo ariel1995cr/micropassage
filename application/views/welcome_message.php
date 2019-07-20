@@ -30,7 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
             <div class="card mx-auto" style="width: 40%;">
                 <div class="card-body align-middle">
-                    <form action="/PassageSystem/index.php/Login/validation" method="post">
+                    <form action="index.php/Login/validation" method="post">
                         <div class="form-group">
                             <label for="formGroupExampleInput">Nombre de Usuario:</label>
                             <input type="text" name="email" class="form-control" id="formGroupExampleInput" placeholder="Example input">
