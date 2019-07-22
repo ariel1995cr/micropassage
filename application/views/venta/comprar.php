@@ -1,12 +1,14 @@
 <?php
+
+use MercadoPago\SDK;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 <!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, mi.inimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, mi.inimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -26,17 +28,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     <script>
 
+        var butacasElegidas = [];
+        var tipoAsiento = "normal";
+
         $(function() {
 
 
             $(".badge-primary").click(function(e) {
-
+                var valorPasaje = document.getElementById("tarifa").innerText;
+                if (parseInt(e.target.innerText)>=53){
+                    valorPasaje = valorPasaje * 2;
+                    tipoAsiento = "ejecutivo";
+                } else if (parseInt(e.target.innerText)>=24 && parseInt(e.target.innerText)<=52){
+                    var descuento = valorPasaje * 0.3;
+                    valorPasaje = valorPasaje - descuento;
+                    tipoAsiento = "promocional";
+                }
                 $.confirm({
                     title: 'Gracias por Elegirnos!',
-                    content: '' +
+                    content:
                         '<form action="" class="formName">' +
                         '<div class="form-group">' +
                         '<label>Confirma la seleecion de asiento numero: '+e.target.innerText+'</label>' +
+                        '<label>Valor del Pasaje: '+valorPasaje+'</label>' +
+                        '<label>Tipo de Asiento: '+tipoAsiento+'</label>' +
                         '<label>Ingrese el Nro de Dni:</label>'+
                         '<input type="text" placeholder="Ingrese Dni" id="dni" class="form-control" required />' +
                         '<label>Ingrese los Nombres:</label>'+
@@ -60,8 +75,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                              "<td>"+apellido+"</td>"+
                                                              "<td>"+dni+"</td>"+
                                                              "<td>"+e.target.innerText+"</td>"+
+                                                             "<td>"+valorPasaje+"</td>"+
+                                                             "<td>"+tipoAsiento+"</td>"+
                                                              "</tr>");
                                 $("#"+e.target.innerText+"").removeClass("badge-primary").addClass("badge-danger");
+
+                                butacasElegidas.push([nombre, dni, apellido, e.target.innerText,valorPasaje,tipoAsiento]);
+
 
 
                             }
@@ -81,6 +101,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     }
                 });
             });
+
+
+            $('#ConfirmarCompra').click(function () {
+
+                console.log(JSON.stringify(butacasElegidas));
+                $("#DatosCompra").append("<input name='datos' value='" +
+                    JSON.stringify(butacasElegidas) +
+                    "'>")
+
+                $("#DatosCompra").submit();
+
+            })
         });
     </script>
 </head>
@@ -95,10 +127,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </nav>
 </header>
 <section class="container">
-
-    <?php
-    print_r($pasajes);
-    ?>
     <article>
             <div class="card text-center">
                 <div class="card-header">
@@ -121,7 +149,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <li class="list-group-item"><?php echo $datosViaje[0]->destino ?></li>
                                 <li class="list-group-item"><?php echo $datos['fecha'] ?></li>
                                 <li class="list-group-item"><?php echo $datosViaje[0]->hora ?></li>
-                                <li class="list-group-item"><?php echo $datosViaje[0]->tarifa ?></li>
+                                <li class="list-group-item" id="tarifa"><?php echo $datosViaje[0]->tarifa ?></li>
                             </ul>
                         </div>
                     </div>
@@ -138,6 +166,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                         <tbody>
                         <?php
+                        if(empty($pasajes)){
+                            $x = 1;
+                            echo "<tr>";
+                            for ($x;$x<$datosViaje[0]->capacidadSuperior+1;$x++){
+                                if($x%4==0) {
+                                    echo "<th class='badge-primary' id='$x'>";
+                                    echo $x;
+                                    echo "</th>";
+                                    echo "</tr>";
+                                } else {
+                                    echo"<th class='badge-primary' id='$x'>";
+                                    echo $x;
+                                    echo"</th>";
+
+                                }
+                            }
+                        } else {
                         $x = 1;
                         echo "<tr>";
                         for ($x;$x<$datosViaje[0]->capacidadSuperior+1;$x++){
@@ -173,6 +218,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             }
 
                         }
+                        }
                         ?>
                         </tbody>
                     </table>
@@ -185,44 +231,65 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </thead>
                         <tbody id="butacasbaja">
                         <?php
-                        $x2 = 1;
-                        echo "<tr>";
-                        for ($x2;$x2<$datosViaje[0]->capacidadInferior+1;$x2++){
-                            $x++;
-                            if($x2%3==0){
-                                foreach ($pasajes as $pasaje){
-                                    if ($pasaje->nroButaca == $x){
-                                        echo"<th class='badge-danger' id='$x'>";
-                                        echo $x;
-                                        echo"</th>";
-                                        echo"</tr>";
-                                    } else {
-                                        echo"<th class='badge-primary' id='$x'>";
-                                        echo $x;
-                                        echo"</th>";
-                                        echo"</tr>";
-                                    }
-                                }
-                            } else {
-                                foreach ($pasajes as $pasaje){
-                                    if ($pasaje->nroButaca == $x){
-                                        echo"<th class='badge-danger' id='$x' disabled>";
-                                        echo $x;
-                                        echo"</th>";
-                                    } else {
-                                        echo"<th class='badge-primary' id='$x'>";
-                                        echo $x;
-                                        echo"</th>";
-                                    }
-                                }
-                            }
+                        if(empty($pasajes)){
+                            $x2 = 1;
+                            echo "<tr>";
+                            for ($x2;$x2<$datosViaje[0]->capacidadInferior+1;$x2++){
 
+                                if($x2%3==0) {
+                                    echo "<th class='badge-primary' id='$x'>";
+                                    echo $x;
+                                    echo "</th>";
+                                    echo "</tr>";
+                                } else {
+                                    echo"<th class='badge-primary' id='$x'>";
+                                    echo $x;
+                                    echo"</th>";
+
+                                }
+                                $x++;
+                            }
+                        } else {
+                            $x2 = 1;
+                            echo "<tr>";
+                            for ($x2;$x2<$datosViaje[0]->capacidadInferior+1;$x2++){
+
+                                if($x2%3==0){
+                                    foreach ($pasajes as $pasaje){
+                                        if ($pasaje->nroButaca == $x){
+                                            echo"<th class='badge-danger' id='$x'>";
+                                            echo $x;
+                                            echo"</th>";
+                                            echo"</tr>";
+                                        } else {
+                                            echo"<th class='badge-primary' id='$x'>";
+                                            echo $x;
+                                            echo"</th>";
+                                            echo"</tr>";
+                                        }
+                                    }
+                                } else {
+                                    foreach ($pasajes as $pasaje){
+                                        if ($pasaje->nroButaca == $x){
+                                            echo"<th class='badge-danger' id='$x' disabled>";
+                                            echo $x;
+                                            echo"</th>";
+                                        } else {
+                                            echo"<th class='badge-primary' id='$x'>";
+                                            echo $x;
+                                            echo"</th>";
+                                        }
+                                    }
+                                }
+                                $x++;
+                            }
                         }
+
                         ?>
                         </tbody>
                     </table>
 
-                    <div class="card ml-3 w-50">
+                    <div class="card ml-3 w-75">
                         <h5 class="card-header">Butacas Elegidas</h5>
                         <div class="card-body">
                             <table class="table table-striped table-dark">
@@ -232,6 +299,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <th scope="col">Apellido</th>
                                     <th scope="col">Dni</th>
                                     <th scope="col">Nro Butaca</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col">Tipo Asiento</th>
                                 </tr>
                                 </thead>
                                 <tbody id="ButacasElegidas">
@@ -239,13 +308,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </tbody>
                             </table>
                         </div>
-                        <form id="compra" action="/PassageSystem/index.php/Ventas/terminarCompra" method="POST">
-                            <script
-                                    src="https://www.mercadopago.com.ar/integrations/v1/web-tokenize-checkout.js"
-                                    data-public-key="TEST-797de73b-42fa-44ab-a5ea-84e92651dbcb"
-                                    data-transaction-amount="300">
-                            </script>
+
+                        <form id="DatosCompra" action="/PassageSystem/index.php/Ventas/terminarCompra" method="Post">
+
+                        <button id="ConfirmarCompra" type="button">Comprar</button>
                         </form>
+
                     </div>
                 </div>
             </div>

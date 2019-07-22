@@ -18,8 +18,6 @@ class Usuario_model extends CI_Model
         $this->db->where('dni', $this->getDni());
         $query = $this->db->get('usuario');
         return $query->custom_result_object('Usuario_model');
-
-
     }
 
     /**

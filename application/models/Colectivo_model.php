@@ -23,6 +23,7 @@ class Colectivo_model extends CI_Model
     {
         $this->db->where('idViaje', $idViaje);
         $this->db->where('idFrecuencia', $idFrecuencia);
+        $this->db->where('fechaPasaje', $fecha);
 
         return $this->db->get('pasaje')->result_object();
     }
