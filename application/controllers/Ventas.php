@@ -55,26 +55,30 @@ class Ventas extends CI_Controller {
     }
 
     function terminarCompra(){
+        $data['datosPost'] = $this->input->post('datos');
         $datos = $this->input->post('datos');
-        $data['datosCompra'] = $this->input->post('datos');
+
         $datos = json_decode($datos);
+        print_r($datos);
 
 
         $butacasCompradas = array();
 
 
         foreach ($datos as $dato) {
-            $this->load->model('Butacas_model');
+            $this->load->model('Pasaje_model');
+            $this->Pasaje_model->setIdViaje($dato->idViaje);
+            $this->Pasaje_model->setIdFrecuencia($dato->idFrecuencia);
+            $this->Pasaje_model->setIdUsuario($this->session->userdata('id'));
+            $this->Pasaje_model->setFechaPasaje($dato->fechaViaje);
+            $this->Pasaje_model->setPrecioPasaje($dato->valorPasaje);
+            $this->Pasaje_model->setNroButaca($dato->butaca);
+            $this->Pasaje_model->setNombre($dato->nombre);
+            $this->Pasaje_model->setApellido($dato->apellido);
+            $this->Pasaje_model->setDniAsignado($dato->dni);
 
-            $this->Butacas_model->setNroButaca($dato[3]);
-            $this->Butacas_model->setTipoButaca($dato[5]);
-            $this->Butacas_model->setValor($dato[4]);
-            $this->Butacas_model->setNombreAsignado($dato[0]);
-            $this->Butacas_model->setApellidoAsignado($dato[2]);
-            $this->Butacas_model->setDniAsignado($dato[1]);
-            $this->Butacas_model->setIdComprador($this->session->userdata('id'));
 
-            array_push($butacasCompradas, $this->Butacas_model);
+            array_push($butacasCompradas, $this->Pasaje_model);
         }
         echo "<pre>";
         print_r($butacasCompradas);
@@ -93,7 +97,7 @@ class Ventas extends CI_Controller {
         $x = 0;
         $valor = 0;
         for ($x; $x<sizeof($butacasCompradas); $x++){
-            $valor = $valor + $butacasCompradas[$x]->getValor();
+            $valor = $valor + $butacasCompradas[$x]->getPrecioPasaje();
         }
         //USUARIO PREFERENCIA
         $data['payer'] = new MercadoPago\Payer();
@@ -123,13 +127,7 @@ class Ventas extends CI_Controller {
         $this->load->view('venta/terminarCompra', $data);
     }
 
-    function VentaExitosa(){
-        print_r($this->input->post());
 
-        if ($this->input->post('payment_status')=="approved "){
-
-        }
-    }
     
 
 }

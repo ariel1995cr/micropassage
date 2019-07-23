@@ -28,10 +28,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     <script>
 
-        var butacasElegidas = [];
-        var tipoAsiento = "normal";
 
         $(function() {
+            var datosViaje = '<?php echo json_encode($datosViaje[0]); ?>';
+            datosViaje = JSON.parse(datosViaje);
+            var butacasElegidas = [];
+            var tipoAsiento = "normal";
+            var fechaViaje = "<?php echo $datos['fecha'] ?>";
 
 
             $(".badge-primary").click(function(e) {
@@ -68,7 +71,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 var nombre = this.$content.find('#Nombres').val().trim();
                                 var dni = this.$content.find('#dni').val().trim();
                                 var apellido = this.$content.find('#Apellido').val().trim();
-
+                                var butaca = e.target.innerText;
+                                var idFrecuencia = datosViaje['idFrecuencia'];
+                                var idViaje = datosViaje.idViaje;
 
                                 $("#ButacasElegidas").append("<tr>" +
                                                              "<td>"+nombre+"</td>"+
@@ -80,7 +85,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                              "</tr>");
                                 $("#"+e.target.innerText+"").removeClass("badge-primary").addClass("badge-danger");
 
-                                butacasElegidas.push([nombre, dni, apellido, e.target.innerText,valorPasaje,tipoAsiento]);
+                                butacasElegidas.push({nombre, dni, apellido,butaca,valorPasaje,tipoAsiento, idFrecuencia, idViaje,fechaViaje});
 
 
 
@@ -116,7 +121,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     </script>
 </head>
-
 <body>
 <header class="fluid-container">
     <nav class="navbar navbar-dark bg-dark">
@@ -322,5 +326,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <?php
 print_r($datosViaje);
 ?>
+
+
+
 </body>
 </html>
