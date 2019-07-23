@@ -21,6 +21,20 @@ class Usuario extends CI_Controller {
         $this->load->view('usuario/index', $data);
 	}
 
+    public function edit()
+    {
+        if($this->input->post('EditarDatos')=="EditarDatos"){
+            $this->Usuario_model->setDni($this->session->userdata('Dni'));
+            $data['usuario'] = $this->Usuario_model->obtenerDatosDni();
+            $this->load->view('usuario/editar', $data);
+
+        }else {
+            redirect("/index.php/Ventas/","refresh");
+        }
+
+
+    }
+
 
 
 }
