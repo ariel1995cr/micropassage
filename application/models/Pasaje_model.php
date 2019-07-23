@@ -13,11 +13,17 @@ class Pasaje_model extends CI_Model
     private $nombre;
     private $apellido;
     private $dniAsignado;
+    private $kmacumulados;
+    private $metodopago;
+
+
+
 
     public function __construct()
     {
         parent::__construct();
     }
+
 
     public function AgregarPasaje($pasajes){
         $i = 0;
@@ -32,10 +38,60 @@ class Pasaje_model extends CI_Model
                 $data[$i]['nombre'] = $pasaje->getNombre();
                 $data[$i]['apellidos'] = $pasaje->getApellido();
                 $data[$i]['dniAsignado'] = $pasaje->getDniAsignado();
+                $data[$i]['kmacumulados'] = $pasaje->getKmacumulados();
+                $data[$i]['metodopago'] = $pasaje->getMetodopago();
+
                 $i++;
         }
         $this->db->insert_batch('pasaje', $data);
     }
+    public function ObtenerPuntos(){
+        $this->db->select_sum('kmacumulados');
+        $this->db->where('idUsuario', $this->session->userdata('id'));
+        $query = $this->db->get('pasaje');
+
+        if ($query->num_rows()>0){
+            return $query->custom_result_object('Pasaje_model');
+        } else {
+            return 0;
+        }
+    }
+
+
+
+
+    /**
+     * @return mixed
+     */
+    public function getMetodopago()
+    {
+        return $this->metodopago;
+    }
+
+    /**
+     * @param mixed $metodopago
+     */
+    public function setMetodopago($metodopago)
+    {
+        $this->metodopago = $metodopago;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKmacumulados()
+    {
+        return $this->kmacumulados;
+    }
+
+    /**
+     * @param mixed $kmacumulados
+     */
+    public function setKmacumulados($kmacumulados)
+    {
+        $this->kmacumulados = $kmacumulados;
+    }
+
 
     /**
      * @return mixed

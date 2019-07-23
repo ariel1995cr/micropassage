@@ -52,6 +52,9 @@ class Ventas extends CI_Controller {
 
         $data['datosViaje'] = $this->Viaje_model->obtenerViaje($idViaje,$idFrecuencia);
 
+        $this->load->model('Pasaje_model');
+        $data['puntos'] = $this->Pasaje_model->ObtenerPuntos();
+
 
 
         $this->load->view('venta/comprar.php', $data);
@@ -60,6 +63,8 @@ class Ventas extends CI_Controller {
 
     function terminarCompra(){
         if (!empty($this->input->post('datos'))){
+
+
             $datos = $this->input->post('datos');
 
             $data['datosPost'] = $datos;
@@ -81,8 +86,15 @@ class Ventas extends CI_Controller {
                 $pasaje->setNombre($dato->nombre);
                 $pasaje->setApellido($dato->apellido);
                 $pasaje->setDniAsignado($dato->dni);
+                $pasaje->setMetodopago($dato->metodoPago);
+
                 $data['butacasCompradas'][] = $pasaje;
             }
+
+
+            echo "<pre>";
+            print_r ($data['butacasCompradas']);
+            echo "</pre>";
 
 
             $this->load->model('Usuario_model');
@@ -98,8 +110,12 @@ class Ventas extends CI_Controller {
             $x = 0;
             $valor = 0;
             for ($x; $x<sizeof($data['butacasCompradas']); $x++){
-                $valor = $valor + $data['butacasCompradas'][$x]->getPrecioPasaje();
+                if($data['butacasCompradas'][$x]->getMetodopago()=="Tarjeta"){
+                    $valor = $valor + $data['butacasCompradas'][$x]->getPrecioPasaje();
+                }
             }
+
+            $data['valorTotal'] = $valor;
 
             //USUARIO PREFERENCIA
             $data['payer'] = new MercadoPago\Payer();

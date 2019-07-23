@@ -38,10 +38,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             var fechaViaje = "<?php echo $datos['fecha'] ?>";
             var origen = datosViaje.origen;
             var destino = datosViaje.destino;
+            var PuntosDisponibles = '<?php echo $puntos[0]->getKmacumulados()?>';
 
 
             $(".badge-primary").click(function(e) {
                 var valorPasaje = document.getElementById("tarifa").innerText;
+                var valorPasajePuntos = valorPasaje * 2.5;
                 if (parseInt(e.target.innerText)>=53){
                     valorPasaje = valorPasaje * 2;
                     tipoAsiento = "ejecutivo";
@@ -56,7 +58,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         '<form action="" class="formName">' +
                         '<div class="form-group">' +
                         '<label>Confirma la seleecion de asiento numero: '+e.target.innerText+'</label>' +
-                        '<label>Valor del Pasaje: '+valorPasaje+'</label>' +
+                        '<label>Valor del Pasaje: $'+valorPasaje+'</label>' +
+                        '<label>Valor del Pasaje en Puntos: '+valorPasajePuntos+'</label>' +
                         '<label>Tipo de Asiento: '+tipoAsiento+'</label>' +
                         '<label>Ingrese el Nro de Dni:</label>'+
                         '<input type="text" placeholder="Ingrese Dni" id="dni" class="form-control" required />' +
@@ -77,6 +80,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 var butaca = e.target.innerText;
                                 var idFrecuencia = datosViaje.idFrecuencia;
                                 var idViaje = datosViaje.idViaje;
+                                var metodoPago = "Tarjeta";
 
                                 $("#ButacasElegidas").append("<tr>" +
                                                              "<td>"+nombre+"</td>"+
@@ -85,27 +89,50 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                              "<td>"+e.target.innerText+"</td>"+
                                                              "<td>"+valorPasaje+"</td>"+
                                                              "<td>"+tipoAsiento+"</td>"+
+                                                             "<td>"+metodoPago+"</td>"+
                                                              "</tr>");
                                 $("#"+e.target.innerText+"").removeClass("badge-primary").addClass("badge-danger");
 
-                                butacasElegidas.push({nombre, dni, apellido,butaca,valorPasaje,tipoAsiento, idFrecuencia, idViaje,fechaViaje, origen, destino});
-
-
+                                butacasElegidas.push({nombre, dni, apellido,butaca,valorPasaje,tipoAsiento, idFrecuencia, idViaje,fechaViaje, origen, destino,metodoPago});
 
                             }
                         },
                         cancel: function () {
                             //close
                         },
-                    },
-                    onContentReady: function () {
-                        // bind to events
-                        var jc = this;
-                        this.$content.find('form').on('submit', function (e) {
-                            // if the user submits the form by pressing enter in the field.
-                            e.preventDefault();
-                            jc.$$formSubmit.trigger('click'); // reference the button and click it
-                        });
+
+                        somethingElse: {
+                            text: 'Confirmar Asiento Puntos',
+                            btnClass: 'btn-blue',
+                            keys: ['enter', 'shift'],
+                            action: function(){
+                                if(PuntosDisponibles>valorPasajePuntos){
+                                var nombre = this.$content.find('#Nombres').val().trim();
+                                var dni = this.$content.find('#dni').val().trim();
+                                var apellido = this.$content.find('#Apellido').val().trim();
+                                var butaca = e.target.innerText;
+                                var idFrecuencia = datosViaje.idFrecuencia;
+                                var idViaje = datosViaje.idViaje;
+                                var metodoPago = "Puntos";
+
+                                $("#ButacasElegidas").append("<tr>" +
+                                    "<td>"+nombre+"</td>"+
+                                    "<td>"+apellido+"</td>"+
+                                    "<td>"+dni+"</td>"+
+                                    "<td>"+e.target.innerText+"</td>"+
+                                    "<td>"+valorPasaje+"</td>"+
+                                    "<td>"+tipoAsiento+"</td>"+
+                                    "<td>"+metodoPago+"</td>"+
+                                    "</tr>");
+                                $("#"+e.target.innerText+"").removeClass("badge-primary").addClass("badge-danger");
+
+                                butacasElegidas.push({nombre, dni, apellido,butaca,valorPasaje,tipoAsiento, idFrecuencia, idViaje,fechaViaje, origen, destino,metodoPago});
+
+                                } else {
+                                    $.alert('No le Alcanza los Puntos para Comprar el Asiento pruebe con otro Metodo!');
+                                }
+                            }
+                        }
                     }
                 });
             });
@@ -125,6 +152,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </script>
 </head>
 <body>
+
+    <?php
+    $butacas = [];
+    foreach ($pasajes as $pasaje){
+        $butacas[] = $pasaje->nroButaca;
+    }
+
+    ?>
+
 <header class="fluid-container">
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="#">
@@ -159,11 +195,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <li class="list-group-item" id="tarifa"><?php echo $datosViaje[0]->tarifa ?></li>
                             </ul>
                         </div>
+                        <div class="p-2 bd-highlight w-25">
+                            <ul class="list-group">
+                                <li class="list-group-item text-monospace font-weight-bold bg-info text-white">PUNTOS DISPONIBLES PARA COMPRAR</li>
+                                <li class="list-group-item text-monospace font-weight-bold bg-info text-white"><?php echo $puntos[0]->getKmacumulados()?></li>
+                            </ul>
+                        </div>
+
                     </div>
 
 
                 </div>
-                <div class="card m-3">
+                <div class="card">
                     <h5 class="card-header text-uppercase font-weight-bold">REFERENCIAS</h5>
                     <div class="card-body">
 
@@ -206,8 +249,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         echo "<tr>";
                         for ($x;$x<$datosViaje[0]->capacidadSuperior+1;$x++){
                             if($x%4==0){
-                                foreach ($pasajes as $pasaje){
-                                    if ($pasaje->nroButaca == $x){
+                                    if (in_array($x,$butacas)){
                                         echo"<th class='badge-danger border border-light' id='$x'>";
                                         echo $x;
                                         echo"</th>";
@@ -220,20 +262,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     }
                                 }
 
-
-                            } else {
-                                foreach ($pasajes as $pasaje){
-                                    if ($pasaje->nroButaca == $x){
-                                        echo"<th class='badge-danger border border-light' id='$x'>";
-                                        echo $x;
-                                        echo"</th>";
-                                    } else {
-                                        echo"<th class='badge-primary border border-light' id='$x'>";
-                                        echo $x;
-                                        echo"</th>";
-                                    }
+                            else {
+                                if (in_array($x,$butacas)){
+                                    echo"<th class='badge-danger border border-light' id='$x'>";
+                                    echo $x;
+                                    echo"</th>";
+                                } else {
+                                    echo"<th class='badge-primary border border-light' id='$x'>";
+                                    echo $x;
+                                    echo"</th>";
                                 }
-
                             }
 
                         }
@@ -275,31 +313,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             for ($x2;$x2<$datosViaje[0]->capacidadInferior+1;$x2++){
 
                                 if($x2%3==0){
-                                    foreach ($pasajes as $pasaje){
-                                        if ($pasaje->nroButaca == $x){
+                                    if (in_array($x,$butacas)){
+                                        echo"<th class='badge-danger border border-light' id='$x'>";
+                                        echo $x;
+                                        echo"</th>";
+                                        echo"</tr>";
+                                    } else {
+                                        echo"<th class='badge-primary border border-light' id='$x'>";
+                                        echo $x;
+                                        echo"</th>";
+                                        echo"</tr>";
+                                    }
+
+                                } else {
+
+                                        if (in_array($x,$butacas)){
                                             echo"<th class='badge-danger border border-light' id='$x'>";
                                             echo $x;
                                             echo"</th>";
-                                            echo"</tr>";
-                                        } else {
-                                            echo"<th class='badge-primary border border-light' id='$x'>";
-                                            echo $x;
-                                            echo"</th>";
-                                            echo"</tr>";
-                                        }
-                                    }
-                                } else {
-                                    foreach ($pasajes as $pasaje){
-                                        if ($pasaje->nroButaca == $x){
-                                            echo"<th class='badge-danger border border-light' id='$x' disabled>";
-                                            echo $x;
-                                            echo"</th>";
                                         } else {
                                             echo"<th class='badge-primary border border-light' id='$x'>";
                                             echo $x;
                                             echo"</th>";
                                         }
-                                    }
+
                                 }
                                 $x++;
                             }
@@ -322,6 +359,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <th scope="col">Nro Butaca</th>
                                     <th scope="col">Precio</th>
                                     <th scope="col">Tipo Asiento</th>
+                                    <th scope="col">Metodo Pago</th>
                                 </tr>
                                 </thead>
                                 <tbody id="ButacasElegidas">
@@ -342,10 +380,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
     </article>
 </section>
-<?php
-print_r($datosViaje);
-?>
-
 
 
 </body>

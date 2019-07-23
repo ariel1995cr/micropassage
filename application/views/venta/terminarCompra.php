@@ -35,6 +35,7 @@
                     <th scope="col">Nombre</th>
                     <th scope="col">Apellido</th>
                     <th scope="col">Butaca Nro</th>
+                    <th scope="col">Metodo de Pago</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,6 +50,7 @@
                     echo "<td>".$butaca->getNombre()."</td>";
                     echo "<td>".$butaca->getApellido()."</td>";
                     echo "<td>".$butaca->getNroButaca()."</td>";
+                    echo "<td>".$butaca->getMetodopago()."</td>";
                     echo "</tr>";
                 }
                 ?>
@@ -56,18 +58,36 @@
             </table>
 
         </div>
-        <div class="card-footer text-muted">
-            <form action="/PassageSystem/index.php/Pasaje/compraExitosa" method="POST">
-                <script
-                        src="https://www.mercadopago.com.ar/integrations/v1/web-payment-checkout.js"
-                        data-access-token= “TEST-7666547261035560-061917-b3827db4841fb02755468af4d6bd24a1-134046859”
-                        data-preference-id="<?php echo $preference->id; ?>"
-                        data-button-label="REALIZAR PAGO DE PASAJES">
-                </script>
+        <?php
+        if($valorTotal==0){
+            ?>
+            <div class="card-footer text-muted">
+                <form action="/PassageSystem/index.php/Pasaje/compraExitosaPuntos" method="POST">
 
-                <input name="ButacasCompradas" value='<?php echo $datosPost?>' hidden>
-            </form>
-        </div>
+                    <input name="ButacasCompradas" value='<?php echo $datosPost?>' hidden>
+
+                    <input type="submit" class="btn btn-primary" value="Terminar Compra Puntos">
+                </form>
+            </div>
+            <?php
+        }else {
+            ?>
+            <div class="card-footer text-muted">
+                <form action="/PassageSystem/index.php/Pasaje/compraExitosa" method="POST">
+                    <script
+                            src="https://www.mercadopago.com.ar/integrations/v1/web-payment-checkout.js"
+                            data-access-token= “TEST-7666547261035560-061917-b3827db4841fb02755468af4d6bd24a1-134046859”
+                            data-preference-id="<?php echo $preference->id; ?>"
+                            data-button-label="REALIZAR PAGO DE PASAJES">
+                    </script>
+
+                    <input name="ButacasCompradas" value='<?php echo $datosPost?>' hidden>
+                </form>
+            </div>
+        <?php
+        }
+        ?>
+
     </div>
 
 </div>

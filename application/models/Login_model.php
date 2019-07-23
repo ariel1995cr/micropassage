@@ -3,9 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login_model extends CI_Model
 {
-    function can_login($email, $password)
+    function can_login($nombreUsuario, $password)
     {
-        $this->db->where('email', $email);
+        $this->db->where('nombreUsuario', $nombreUsuario);
         $query = $this->db->get('Usuario');
         if($query->num_rows() > 0)
         {
@@ -17,9 +17,10 @@ class Login_model extends CI_Model
                     if($password == $store_password)
                     {
                         $this->session->set_userdata('id', $row->id);
-                        $this->session->set_userdata('email', $email);
-                        $this->session->set_userdata('nombreUsuario', $row->nombreUsuario);
+                        $this->session->set_userdata('email', $row->email);
+                        $this->session->set_userdata('nombreUsuario', $nombreUsuario);
                         $this->session->set_userdata('Dni', $row->dni);
+                        $this->session->set_userdata('pasajeroFrecuente', $row->pasajeroFrecuente);
                     }
                     else
                     {
@@ -38,22 +39,7 @@ class Login_model extends CI_Model
         }
     }
 
-    function can_loginCaminante($email)
-    {
-        $this->db->where('emailCaminante', $email);
-        $query = $this->db->get('ResponsableVotante');
-        if($query->num_rows() > 0)
-        {
-            foreach($query->result() as $row)
-            {
-                        $this->session->set_userdata('email', $row->emailCaminante);
-            }
-        }
-        else
-        {
-            return 'Wrong Email Address';
-        }
-    }
+
 
 }
 
