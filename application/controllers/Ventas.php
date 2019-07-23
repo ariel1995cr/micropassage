@@ -1,6 +1,7 @@
 <?php
 
 use MercadoPago\Item;
+use MercadoPago\Payer;
 use MercadoPago\Preference;
 use MercadoPago\SDK;
 
@@ -12,8 +13,10 @@ class Ventas extends CI_Controller {
     {
     	parent::__construct();
         if (!$this->session->userdata('id')){
-            redirect(index.php/Login);
+            redirect("index.php/Login", "refresh");
         }
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, OPTIONS");
     	//Do your magic here
     }
 
@@ -28,6 +31,7 @@ class Ventas extends CI_Controller {
     }
     
     function Comprar($fecha,$idViaje,$idFrecuencia){
+
         $fecha = explode("-",$fecha);
 
         $fecha = $fecha[2]."-".$fecha[1]."-".$fecha[0];
@@ -55,76 +59,86 @@ class Ventas extends CI_Controller {
     }
 
     function terminarCompra(){
-        $data['datosPost'] = $this->input->post('datos');
-        $datos = $this->input->post('datos');
+        if (!empty($this->input->post('datos'))){
+            $datos = $this->input->post('datos');
 
-        $datos = json_decode($datos);
-        print_r($datos);
+            $data['datosPost'] = $datos;
 
+            $data['info'] = json_decode($datos);
 
-        $butacasCompradas = array();
-
-
-        foreach ($datos as $dato) {
+            $datos = json_decode($datos);
             $this->load->model('Pasaje_model');
-            $this->Pasaje_model->setIdViaje($dato->idViaje);
-            $this->Pasaje_model->setIdFrecuencia($dato->idFrecuencia);
-            $this->Pasaje_model->setIdUsuario($this->session->userdata('id'));
-            $this->Pasaje_model->setFechaPasaje($dato->fechaViaje);
-            $this->Pasaje_model->setPrecioPasaje($dato->valorPasaje);
-            $this->Pasaje_model->setNroButaca($dato->butaca);
-            $this->Pasaje_model->setNombre($dato->nombre);
-            $this->Pasaje_model->setApellido($dato->apellido);
-            $this->Pasaje_model->setDniAsignado($dato->dni);
 
 
-            array_push($butacasCompradas, $this->Pasaje_model);
+            foreach ($datos as $dato) {
+                $pasaje = new $this->Pasaje_model;
+                $pasaje->setIdViaje($dato->idViaje);
+                $pasaje->setIdFrecuencia($dato->idFrecuencia);
+                $pasaje->setIdUsuario($this->session->userdata('id'));
+                $pasaje->setFechaPasaje($dato->fechaViaje);
+                $pasaje->setPrecioPasaje($dato->valorPasaje);
+                $pasaje->setNroButaca($dato->butaca);
+                $pasaje->setNombre($dato->nombre);
+                $pasaje->setApellido($dato->apellido);
+                $pasaje->setDniAsignado($dato->dni);
+                $data['butacasCompradas'][] = $pasaje;
+            }
+
+
+            $this->load->model('Usuario_model');
+            $this->Usuario_model->setDni($this->session->userdata('Dni'));
+            $datosUsuario = $this->Usuario_model->obtenerDatosDni();
+            print_r($datosUsuario);
+            require_once 'vendor/autoload.php';
+
+            MercadoPago\SDK::setAccessToken("TEST-7666547261035560-061917-b3827db4841fb02755468af4d6bd24a1-134046859");
+            // Crea un objeto de preferencia
+            $data['preference'] = new MercadoPago\Preference();
+
+            $x = 0;
+            $valor = 0;
+            for ($x; $x<sizeof($data['butacasCompradas']); $x++){
+                $valor = $valor + $data['butacasCompradas'][$x]->getPrecioPasaje();
+            }
+
+            //USUARIO PREFERENCIA
+            $data['payer'] = new MercadoPago\Payer();
+            $data['payer']->name = $datosUsuario[0]->getNombres();
+            $data['payer']->surname = $datosUsuario[0]->getApellido();
+            $data['payer']->email = $datosUsuario[0]->getEmail();
+            $data['payer']->phone = array(
+                "area_code" => "",
+                "number" => $datosUsuario[0]->getTelefono()
+            );
+            $data['payer']->identification = array(
+                "type" => "DNI",
+                "number" => $datosUsuario[0]->getDni()
+            );
+
+
+            // Crea un ítem en la preferencia
+            $data['item'] = new MercadoPago\Item();
+            $data['item']->title = 'Pasajes Colectivo';
+            $data['item']->quantity = 1;
+            $data['item']->unit_price = $valor;
+            $data['item']->currency_id = "ARS";
+            $data['preference']->items = array($data['item']);
+            $data['preference']->payment_methods = array(
+                "excluded_payment_types" => array(
+                    array("id" => "ticket"),
+                    array("id" => "atm")
+                ),
+                "installments" => 12
+            );
+            $data['preference']->binary_mode = true;
+
+            $data['preference']->save();
+
+            $this->load->view('venta/terminarCompra', $data);
+        } else {
+            redirect('/index.php', 'refresh');
         }
-        echo "<pre>";
-        print_r($butacasCompradas);
-        echo"</pre>";
 
-        $this->load->model('Usuario_model');
-        $this->Usuario_model->setDni($this->session->userdata('Dni'));
-        $datosUsuario = $this->Usuario_model->obtenerDatosDni();
-        print_r($datosUsuario);
-        require_once 'vendor/autoload.php';
-
-        MercadoPago\SDK::setAccessToken("TEST-7666547261035560-061917-b3827db4841fb02755468af4d6bd24a1-134046859");
-        // Crea un objeto de preferencia
-        $data['preference'] = new MercadoPago\Preference();
-
-        $x = 0;
-        $valor = 0;
-        for ($x; $x<sizeof($butacasCompradas); $x++){
-            $valor = $valor + $butacasCompradas[$x]->getPrecioPasaje();
-        }
-        //USUARIO PREFERENCIA
-        $data['payer'] = new MercadoPago\Payer();
-        $data['payer']->name = $datosUsuario[0]->getNombres();
-        $data['payer']->surname = $datosUsuario[0]->getApellido();
-        $data['payer']->email = $datosUsuario[0]->getEmail();
-        $data['payer']->phone = array(
-            "area_code" => "",
-            "number" => $datosUsuario[0]->getTelefono()
-        );
-        $data['payer']->identification = array(
-            "type" => "DNI",
-            "number" => $datosUsuario[0]->getDni()
-        );
-
-
-        // Crea un ítem en la preferencia
-        $data['item'] = new MercadoPago\Item();
-        $data['item']->title = 'Pasajes Colectivo';
-        $data['item']->quantity = 1;
-        $data['item']->unit_price = $valor;
-        $data['item']->currency_id = "ARS";
-        $data['preference']->items = array($data['item']);
-        $data['preference']->binary_mode = true;
-        $data['preference']->save();
-
-        $this->load->view('venta/terminarCompra', $data);
     }
 
 

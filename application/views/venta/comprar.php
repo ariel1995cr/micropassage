@@ -32,9 +32,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $(function() {
             var datosViaje = '<?php echo json_encode($datosViaje[0]); ?>';
             datosViaje = JSON.parse(datosViaje);
+            console.log(datosViaje);
             var butacasElegidas = [];
             var tipoAsiento = "normal";
             var fechaViaje = "<?php echo $datos['fecha'] ?>";
+            var origen = datosViaje.origen;
+            var destino = datosViaje.destino;
 
 
             $(".badge-primary").click(function(e) {
@@ -65,14 +68,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         '</form>',
                     buttons: {
                         formSubmit: {
-                            text: 'Submit',
+                            text: 'Confirmar Asiento',
                             btnClass: 'btn-blue',
                             action: function () {
                                 var nombre = this.$content.find('#Nombres').val().trim();
                                 var dni = this.$content.find('#dni').val().trim();
                                 var apellido = this.$content.find('#Apellido').val().trim();
                                 var butaca = e.target.innerText;
-                                var idFrecuencia = datosViaje['idFrecuencia'];
+                                var idFrecuencia = datosViaje.idFrecuencia;
                                 var idViaje = datosViaje.idViaje;
 
                                 $("#ButacasElegidas").append("<tr>" +
@@ -85,7 +88,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                              "</tr>");
                                 $("#"+e.target.innerText+"").removeClass("badge-primary").addClass("badge-danger");
 
-                                butacasElegidas.push({nombre, dni, apellido,butaca,valorPasaje,tipoAsiento, idFrecuencia, idViaje,fechaViaje});
+                                butacasElegidas.push({nombre, dni, apellido,butaca,valorPasaje,tipoAsiento, idFrecuencia, idViaje,fechaViaje, origen, destino});
 
 
 
@@ -113,7 +116,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 console.log(JSON.stringify(butacasElegidas));
                 $("#DatosCompra").append("<input name='datos' value='" +
                     JSON.stringify(butacasElegidas) +
-                    "'>")
+                    "'hidden>")
 
                 $("#DatosCompra").submit();
 
@@ -133,18 +136,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <section class="container">
     <article>
             <div class="card text-center">
-                <div class="card-header">
+                <div class="card-header text-uppercase font-weight-bold">
                     Viaje Seleccionado
                 </div>
                 <div class="card-body">
-                    <div class="d-flex">
+                    <div class="d-flex justify-content-center">
                         <div class="p-2 bd-highlight w-25">
                             <ul class="list-group">
-                                <li class="list-group-item">Ciudad Salida</li>
-                                <li class="list-group-item">Ciudad Destino</li>
-                                <li class="list-group-item">Fecha de Salida</li>
-                                <li class="list-group-item">Día de Salida</li>
-                                <li class="list-group-item">Tarifa Normal</li>
+                                <li class="list-group-item text-monospace font-weight-bold bg-info text-white">Ciudad Salida</li>
+                                <li class="list-group-item text-monospace font-weight-bold bg-info text-white">Ciudad Destino</li>
+                                <li class="list-group-item text-monospace font-weight-bold bg-info text-white">Fecha de Salida</li>
+                                <li class="list-group-item text-monospace font-weight-bold bg-info text-white">Día de Salida</li>
+                                <li class="list-group-item text-monospace font-weight-bold bg-info text-white">Tarifa Normal</li>
                             </ul>
                         </div>
                         <div class="p-2 bd-highlight w-25">
@@ -160,6 +163,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
                 </div>
+                <div class="card m-3">
+                    <h5 class="card-header text-uppercase font-weight-bold">REFERENCIAS</h5>
+                    <div class="card-body">
+
+                        <div class="d-flex bd-highlight">
+                            <div class="p-2 flex-fill bd-highlight badge-primary">Disponible</div>
+                            <div class="p-2 flex-fill bd-highlight badge-danger">No Disponible</div>
+                            <div class="p-2 flex-fill bd-highlight bg-info text-white">Seleccionado</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-footer text-muted d-flex">
                     <table class="table table-borderless w-25">
                         <thead class="thead-dark">
@@ -175,12 +190,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             echo "<tr>";
                             for ($x;$x<$datosViaje[0]->capacidadSuperior+1;$x++){
                                 if($x%4==0) {
-                                    echo "<th class='badge-primary' id='$x'>";
+                                    echo "<th class='badge-primary border border-light' id='$x'>";
                                     echo $x;
                                     echo "</th>";
                                     echo "</tr>";
                                 } else {
-                                    echo"<th class='badge-primary' id='$x'>";
+                                    echo"<th class='badge-primary border border-light' id='$x'>";
                                     echo $x;
                                     echo"</th>";
 
@@ -193,12 +208,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             if($x%4==0){
                                 foreach ($pasajes as $pasaje){
                                     if ($pasaje->nroButaca == $x){
-                                        echo"<th class='badge-danger' id='$x'>";
+                                        echo"<th class='badge-danger border border-light' id='$x'>";
                                         echo $x;
                                         echo"</th>";
                                         echo"</tr>";
                                     } else {
-                                        echo"<th class='badge-primary' id='$x'>";
+                                        echo"<th class='badge-primary border border-light' id='$x'>";
                                         echo $x;
                                         echo"</th>";
                                         echo"</tr>";
@@ -209,11 +224,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             } else {
                                 foreach ($pasajes as $pasaje){
                                     if ($pasaje->nroButaca == $x){
-                                        echo"<th class='badge-danger' id='$x'>";
+                                        echo"<th class='badge-danger border border-light' id='$x'>";
                                         echo $x;
                                         echo"</th>";
                                     } else {
-                                        echo"<th class='badge-primary' id='$x'>";
+                                        echo"<th class='badge-primary border border-light' id='$x'>";
                                         echo $x;
                                         echo"</th>";
                                     }
@@ -226,6 +241,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         ?>
                         </tbody>
                     </table>
+
 
                     <table class="table table-borderless ml-3 w-25">
                         <thead class="thead-dark">
@@ -241,12 +257,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             for ($x2;$x2<$datosViaje[0]->capacidadInferior+1;$x2++){
 
                                 if($x2%3==0) {
-                                    echo "<th class='badge-primary' id='$x'>";
+                                    echo "<th class='badge-primary border border-light' id='$x'>";
                                     echo $x;
                                     echo "</th>";
                                     echo "</tr>";
                                 } else {
-                                    echo"<th class='badge-primary' id='$x'>";
+                                    echo"<th class='badge-primary border border-light' id='$x'>";
                                     echo $x;
                                     echo"</th>";
 
@@ -261,12 +277,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 if($x2%3==0){
                                     foreach ($pasajes as $pasaje){
                                         if ($pasaje->nroButaca == $x){
-                                            echo"<th class='badge-danger' id='$x'>";
+                                            echo"<th class='badge-danger border border-light' id='$x'>";
                                             echo $x;
                                             echo"</th>";
                                             echo"</tr>";
                                         } else {
-                                            echo"<th class='badge-primary' id='$x'>";
+                                            echo"<th class='badge-primary border border-light' id='$x'>";
                                             echo $x;
                                             echo"</th>";
                                             echo"</tr>";
@@ -275,11 +291,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 } else {
                                     foreach ($pasajes as $pasaje){
                                         if ($pasaje->nroButaca == $x){
-                                            echo"<th class='badge-danger' id='$x' disabled>";
+                                            echo"<th class='badge-danger border border-light' id='$x' disabled>";
                                             echo $x;
                                             echo"</th>";
                                         } else {
-                                            echo"<th class='badge-primary' id='$x'>";
+                                            echo"<th class='badge-primary border border-light' id='$x'>";
                                             echo $x;
                                             echo"</th>";
                                         }
@@ -293,8 +309,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </tbody>
                     </table>
 
+
                     <div class="card ml-3 w-75">
-                        <h5 class="card-header">Butacas Elegidas</h5>
+                        <h5 class="card-header text-uppercase font-weight-bold">Butacas Elegidas</h5>
                         <div class="card-body">
                             <table class="table table-striped table-dark">
                                 <thead>
@@ -315,7 +332,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                         <form id="DatosCompra" action="/PassageSystem/index.php/Ventas/terminarCompra" method="Post">
 
-                        <button id="ConfirmarCompra" type="button">Comprar</button>
+                            <input type="button" class="btn btn-secondary btn-lg btn-block" name="ConfirmarCompra" id="ConfirmarCompra" value="Comprar">
+
+
                         </form>
 
                     </div>

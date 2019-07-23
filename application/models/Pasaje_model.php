@@ -14,6 +14,11 @@ class Pasaje_model extends CI_Model
     private $apellido;
     private $dniAsignado;
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function AgregarPasaje($pasajes){
         $i = 0;
         foreach ($pasajes as $pasaje)

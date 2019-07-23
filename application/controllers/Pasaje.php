@@ -5,13 +5,17 @@ class Pasaje extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
+        if (!$this->session->userdata('id')){
+            redirect(index.php/Login);
+        }
     }
 
     public function compraExitosa()
 	{
-	    $butacas =  $this->input->post('ButacasCompradas');
+
+        $butacas =  $this->input->post('ButacasCompradas');
         print_r($butacas);
-	    $butacas = json_decode($butacas);
+        $butacas = json_decode($butacas);
         echo "<br>";
 
         print_r($butacas);
@@ -19,7 +23,7 @@ class Pasaje extends CI_Controller {
         $arrayPasajes = array();
 
         $x = 0;
-	    foreach($butacas as $butaca){
+        foreach($butacas as $butaca){
             $this->load->model('Pasaje_model');
             $this->Pasaje_model->setIdViaje($butaca->idViaje);
             $this->Pasaje_model->setIdFrecuencia($butaca->idFrecuencia);
@@ -36,7 +40,8 @@ class Pasaje extends CI_Controller {
         }
 
         $this->load->model('Pasaje_model');
-	    $this->Pasaje_model->AgregarPasaje($arrayPasajes);
+        $this->Pasaje_model->AgregarPasaje($arrayPasajes);
+
 	}
 
 

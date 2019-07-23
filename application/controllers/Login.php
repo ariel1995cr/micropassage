@@ -18,10 +18,6 @@ class Login extends CI_Controller {
 
     function index()
     {
-        if($this->session->userdata('id'))
-        {
-            redirect('/index.php/Ventas', 'refresh');
-        }
         $this->load->view('welcome_message');
     }
 

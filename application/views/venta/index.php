@@ -35,7 +35,12 @@
                     var destinos = JSON.parse(msg);
                     console.log(destinos);
                     $('#NombreDestino').prop("disabled",false);
-                    $('#NombreDestino').append("<option value=\'"+destinos[0]['idciudadestino']+"\' >"+destinos[0]['nombreCiudad']+"</option>");
+                    var x=0;
+                    for(x;x<destinos.length;x++){
+                        $('#NombreDestino').append("<option value=\'"+destinos[x]['idciudadestino']+"\' >"+destinos[x]['nombreCiudad']+"</option>");
+                    }
+
+
                     idViaje = destinos[0]['idViaje'];
         
                 });
@@ -110,15 +115,13 @@
 
             $("#BuscarPasaje").click(function (e) { 
                 e.preventDefault();
-                var Origen = $("#NombreOrigen").val();
-                var Destino = $("#NombreDestino").val();
-                var FechaIda = $("#datefechaPartida").val();
+                var Origen = $("#NombreOrigen").val().trim();
+                var Destino = $("#NombreDestino").val().trim();
+                var FechaIda = $("#datefechaPartida").val().trim();
 
-                console.log(diaViaje);
-                console.log(Destino);
-                console.log(FechaIda);
-                console.log(idViaje);
-
+                if (Origen == "" || Destino == "" || FechaIda == ""){
+                alert("Debe estar completo los campos de Origen, Destino y Fecha de Pasaje");
+                } else {
                 var request = $.ajax({
                     url: "Viaje/BuscarPasajes",
                     method: "POST",
@@ -146,22 +149,37 @@
                     $.each(viajes,function(i,v){
                         console.log(v);
                         console.log(v['idciudadestino']);
-                        $("#cuerpotabla").append('<tr>'+
-                                                '<td>'+v.dia+'</td>'+
-                                                '<td>'+$("#datefechaPartida").val()+'</td>'+
-                                                '<td>'+v.hora+'</td>'+
-                                                '<td>'+$("#NombreOrigen option:selected").text()+'</td>'+
-                                                '<td>'+$("#NombreDestino option:selected").text()+'</td>'+
-                                                '<td>'+v.tarifa+'</td>'+
-                                                '<td><a href="http://localhost/PassageSystem/index.php/Ventas/Comprar/'+$("#datefechaPartida").val()+'/'+v.idViaje+'/'+v.idFrecuencia+'"><button type="button" class="btn btn-outline-primary">Elegir Viaje</button></td></a>'+
-                                                '</tr>');  
+                        var hora = v.hora.split(":");
+                        var fecha = $("#datefechaPartida").val().split("-");
+
+                        var fechaHoraViaje = new Date(fecha[1]+"-"+fecha[0]+"-"+fecha[2]);
+                        fechaHoraViaje.setHours(hora[0]-2);
+                        fechaHoraViaje.setMinutes(hora[1]);
+
+                        var fechaHoraActual = new Date();
+
+                        if (fechaHoraViaje<fechaHoraActual){
+                            console.log("es menor");
+                        } else {
+                            $("#cuerpotabla").append('<tr>'+
+                                '<td>'+v.dia+'</td>'+
+                                '<td>'+$("#datefechaPartida").val()+'</td>'+
+                                '<td>'+v.hora+'</td>'+
+                                '<td>'+$("#NombreOrigen option:selected").text()+'</td>'+
+                                '<td>'+$("#NombreDestino option:selected").text()+'</td>'+
+                                '<td>'+v.tarifa+'</td>'+
+                                '<td><a href="http://localhost/PassageSystem/index.php/Ventas/Comprar/'+$("#datefechaPartida").val()+'/'+v.idViaje+'/'+v.idFrecuencia+'"><button type="button" name="ElegirViaje" class="btn btn-outline-primary">Elegir Viaje</button></td></a>'+
+                                '</tr>');
+                        }
+
+
                         });
 
                 });
                     
-            });
+            }
 
-            
+        });
             
         });    
         
