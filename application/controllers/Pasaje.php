@@ -110,6 +110,21 @@ class Pasaje extends CI_Controller {
 
     }
 
+    public function ImprimirPasaje($idBoleto){
+
+        $viewdata=[];
+
+        $this->load->view('pasaje/ImprimirPasaje', $viewdata, TRUE);
+        // Cargamos la librería
+        $this->load->library('pdfgenerator');
+        // definamos un nombre para el archivo. No es necesario agregar la extension .pdf
+        $filename = 'comprobante_pago';
+        // generamos el PDF. Pasemos por encima de la configuración general y definamos otro tipo de papel
+        $this->pdfgenerator->generate($html, $filename, true, 'Letter', 'portrait');
+
+
+    }
+
 
 
 }
