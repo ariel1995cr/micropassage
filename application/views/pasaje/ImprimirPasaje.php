@@ -9,65 +9,66 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 </head>
+
 <body class="container">
+
 <div class="bg-primary mt-5 rounded bg-secondary">
-    <div class="d-flex">
-        <div class="p-2 bd-highlight w-75">
-            <p class="display-4 font-weight-bold">Bus Ticket</p>
-        </div>
-        <div class="border-left p-2 bd-highlight align-self-end">
-            <p class="font-weight-bold"><h2>Bus Ticket</h2></p>
-        </div>
-    </div>
-    <div class="bg-info">
-        <div class="d-flex">
-            <div class="p-2 bd-highlight form-group ml-2 mr-1 row p-3 mb-2 text-white w-50">
-                <label for="Fecha" class="col-sm-2 col-form-label">FECHA</label>
-                <div class="col-sm-10">
-                    <input type="text" readonly class="form-control-plaintext bg-light rounded" id="Fecha" value="26-02-95">
-                </div>
-                <label for="HORA" class="col-sm-2 col-form-label mt-3">HORA</label>
-                <div class="col-sm-10 mt-3">
-                    <input type="text" readonly class="form-control-plaintext bg-light rounded" id="HORA" value="16:30">
-                </div>
-                <label for="origen" class="col-sm-2 col-form-label mt-3">DESDE</label>
-                <div class="col-sm-10 mt-3">
-                    <input type="text" readonly class="form-control-plaintext bg-light rounded" id="origen" value="Comodoro">
-                </div>
-                <label for="destino" class="col-sm-2 col-form-label mt-3">HASTA</label>
-                <div class="col-sm-10 mt-3">
-                    <input type="text" readonly class="form-control-plaintext bg-light rounded" id="destino" value="Buenos Aires">
-                </div>
-            </div>
-            <div class="p-2 bd-highlight text-white">
-                <label for="Fecha" class="col-sm-2 col-form-label">ASIENTO</label>
-                <div class="col-sm-10">
-                    <input type="text" readonly class="form-control-plaintext bg-light rounded" style="height: 100px;" id="Fecha" value="26-02-95">
-                </div>
-            </div>
-            <div class="border-left p-2 bd-highlight form-group ml-2 mr-1 row p-3 mb-2 text-white w-25">
-                <label for="Fecha" class="col-sm-2 col-form-label">FECHA</label>
-                <div class="col-sm-10">
-                    <input type="text" readonly class="ml-2 form-control-plaintext bg-light rounded" id="Fecha" value="26-02-95">
-                </div>
-                <label for="HORA" class="col-sm-2 col-form-label mt-3">HORA</label>
-                <div class="col-sm-10 mt-3">
-                    <input type="text" readonly class="ml-2 form-control-plaintext bg-light rounded" id="HORA" value="16:30">
-                </div>
-                <label for="origen" class="col-sm-2 col-form-label mt-3">DESDE</label>
-                <div class="col-sm-10 mt-3">
-                    <input type="text" readonly class="ml-2 form-control-plaintext bg-light rounded" id="origen" value="Comodoro">
-                </div>
-                <label for="destino" class="col-sm-2 col-form-label mt-3">HASTA</label>
-                <div class="col-sm-10 mt-3">
-                    <input type="text" readonly class="ml-2 form-control-plaintext bg-light rounded" id="destino" value="Buenos Aires">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div>
-        <p class="ml-5 text-capitalize font-weight-bold">PASAJE DE COLECTIVO</p>
-    </div>
+    <table class="table table-borderless">
+        <thead>
+        <tr>
+            <th colspan="4"><img src="<?php echo $_SERVER['DOCUMENT_ROOT']."/PassageSystem/resources/img/logo.jpg"?>" width="40" height="40" class="rounded-circle">BusTicket</th>
+            <TH>Boleto Nro: <?php echo $datos->getIdBoleto()?></TH>
+            <th style="border-left-style: dotted"><img src="<?php echo $_SERVER['DOCUMENT_ROOT']."/PassageSystem/resources/img/logo.jpg"?>" width="40" height="40" class="rounded-circle">BusTicket</th>
+            <TH colspan="3">Boleto Nro: <?php echo $datos->getIdBoleto()?></TH>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>PASAJERO:</td>
+            <td colspan="4"><div class="bg-light rounded"><?php echo $datos->getNombre()." ".$datos->getApellido(); ?></div></td>
+            <td style="border-left-style: dotted">PASAJERO:</td>
+            <td colspan="3"><div class="bg-light rounded"><?php echo $datos->getNombre()." ".$datos->getApellido(); ?></div></td>
+        </tr>
+        <tr>
+            <td>FECHA:</td>
+            <td colspan="4"><div class="bg-light rounded"><?php echo $datos->getFechaPasaje(); ?></div></td>
+            <td style="border-left-style: dotted">FECHA:</td>
+            <td colspan="3"><div class="bg-light rounded"><?php echo $datos->getFechaPasaje(); ?></div></td>
+        </tr>
+        <tr>
+            <td>HORA:</td>
+            <td colspan="3"><div class="bg-light rounded"><?php echo $datos->getHora(); ?></div></td>
+            <td class="font-weight-bold">Butaca</td>
+            <td style="border-left-style: dotted">HORA:</td>
+            <td COLSPAN="3"><div class="bg-light rounded"><?php echo $datos->getHora(); ?></div></td>
+        </tr>
+        <tr>
+            <td>DESDE:</td>
+            <td colspan="3"><div class="bg-light rounded"><?php echo $datos->getCiudadOrigen(); ?></div></td>
+            <td><div class="bg-light rounded"><?php echo $datos->getNroButaca()?></div></td>
+            <td style="border-left-style: dotted">DESDE:</td>
+            <td COLSPAN="3"><div class="bg-light rounded"><?php echo $datos->getCiudadOrigen(); ?></div></td>
+        </tr>
+        <tr>
+            <td>HASTA:</td>
+            <td class="" colspan="4"><div class="bg-light rounded"><?php echo $datos->getCiudadDestino(); ?></div></td>
+            <td style="border-left-style: dotted">FECHA:</td>
+            <td COLSPAN="3"><div class="bg-light rounded"><?php echo $datos->getCiudadDestino(); ?></div></td>
+        </tr>
+        <tr>
+            <td colspan="5"></td>
+            <td style="border-left-style: dotted">Butaca:</td>
+            <td colspan="3"><div class="bg-light rounded"><?php echo $datos->getNroButaca()?></div></td>
+        </tr>
+
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="5">TICKET</th>
+            <th style="border-left-style: dotted" colspan="3">TICKET</th>
+        </tr>
+        </tfoot>
+    </table>
 </div>
 
 </body>

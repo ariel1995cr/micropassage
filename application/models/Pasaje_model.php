@@ -15,36 +15,103 @@ class Pasaje_model extends CI_Model
     private $dniAsignado;
     private $kmacumulados;
     private $metodopago;
+    private $ciudadOrigen;
+    private $ciudadDestino;
+    private $hora;
 
 
 
 
     public function __construct()
-    {
-        parent::__construct();
+        {
+        	parent::__construct();
+
+
+        	//Do your magic here
+        }
+
+    public function ObtenerPasajeID(){
+        $this->db->select('pasaje.idBoleto,
+                            pasaje.idViaje,
+                            pasaje.idFrecuencia,
+                            pasaje.nombre,
+                            pasaje.dniAsignado,
+                            pasaje.apellidos AS apellido,
+                            pasaje.nroButaca,
+                            pasaje.fechaPasaje,
+                            viaje.idciudadorigen,
+                            viaje.idciudadestino,
+                            ciudadOrigen.nombreCiudad AS ciudadOrigen,
+                            ciudadDestino.nombreCiudad AS ciudadDestino,
+                            frecuencia.hora');
+        $this->db->where('idBoleto', $this->idBoleto);
+        $this->db->where('idUsuario', $this->session->userdata('id'));
+        $this->db->join('Viaje', 'Viaje.idViaje = pasaje.idViaje', 'inner');
+        $this->db->join('ciudad as ciudadOrigen', 'viaje.idciudadorigen = ciudadOrigen.idCiudad', 'inner');
+        $this->db->join('ciudad as ciudadDestino', 'viaje.idciudadestino = ciudadDestino.idCiudad', 'inner');
+        $this->db->join('frecuencia', 'frecuencia.idViaje = viaje.idViaje AND pasaje.idFrecuencia = frecuencia.idFrecuencia', 'inner');
+        return $this->db->get('pasaje')->custom_result_object('Pasaje_model');
+
     }
 
 
     public function AgregarPasaje($pasajes){
-        $i = 0;
+        $ids = array();
+
+        $this->db->trans_start();
         foreach ($pasajes as $pasaje)
         {
-                $data[$i]['idViaje'] = $pasaje->getIdViaje();
-                $data[$i]['idFrecuencia'] = $pasaje->getIdFrecuencia();
-                $data[$i]['idUsuario'] = $pasaje->getIdUsuario();
-                $data[$i]['precioPasaje'] =  $pasaje->getPrecioPasaje();
-                $data[$i]['nroButaca'] = $pasaje->getNroButaca();
-                $data[$i]['fechaPasaje'] = $pasaje->getFechaPasaje();
-                $data[$i]['nombre'] = $pasaje->getNombre();
-                $data[$i]['apellidos'] = $pasaje->getApellido();
-                $data[$i]['dniAsignado'] = $pasaje->getDniAsignado();
-                $data[$i]['kmacumulados'] = $pasaje->getKmacumulados();
-                $data[$i]['metodopago'] = $pasaje->getMetodopago();
+            $this->db->insert('pasaje', array(
+                'idViaje'=> $pasaje->getIdViaje(),
+                'idFrecuencia'=> $pasaje->getIdFrecuencia(),
+                'idUsuario'=> $pasaje->getIdUsuario(),
+                'precioPasaje'=> $pasaje->getPrecioPasaje(),
+                'nroButaca'=> $pasaje->getNroButaca(),
+                'fechaPasaje'=> $pasaje->getFechaPasaje(),
+                'nombre'=> $pasaje->getNombre(),
+                'apellidos'=> $pasaje->getApellido(),
+                'dniAsignado'=> $pasaje->getDniAsignado(),
+                'kmacumulados'=> $pasaje->getKmacumulados(),
+                'metodopago'=> $pasaje->getMetodopago()
+            ));
 
-                $i++;
+                $ids[] = $this->db->insert_id();
         }
-        $this->db->insert_batch('pasaje', $data);
+        $this->db->trans_complete();
+        return $ids;
     }
+
+    public function ConseguirPasajes($idPasajes){
+        $this->db->trans_start();
+        foreach ($idPasajes as $idPasaje)
+        {
+            $this->db->select('pasaje.idBoleto,
+                            pasaje.idViaje,
+                            pasaje.idFrecuencia,
+                            pasaje.nombre,
+                            pasaje.dniAsignado,
+                            pasaje.apellidos AS apellido,
+                            pasaje.nroButaca,
+                            pasaje.fechaPasaje,
+                            viaje.idciudadorigen,
+                            viaje.idciudadestino,
+                            ciudadOrigen.nombreCiudad AS ciudadOrigen,
+                            ciudadDestino.nombreCiudad AS ciudadDestino,
+                            frecuencia.hora');
+            $this->db->where('idBoleto', $idPasaje);
+            $this->db->where('idUsuario', $this->session->userdata('id'));
+            $this->db->join('Viaje', 'Viaje.idViaje = pasaje.idViaje', 'inner');
+            $this->db->join('ciudad as ciudadOrigen', 'viaje.idciudadorigen = ciudadOrigen.idCiudad', 'inner');
+            $this->db->join('ciudad as ciudadDestino', 'viaje.idciudadestino = ciudadDestino.idCiudad', 'inner');
+            $this->db->join('frecuencia', 'frecuencia.idViaje = viaje.idViaje AND pasaje.idFrecuencia = frecuencia.idFrecuencia', 'inner');
+
+
+            $pasajes[] = $this->db->get('pasaje')->custom_result_object('Pasaje_model');
+        }
+        $this->db->trans_complete();
+        return $pasajes;
+    }
+
     public function ObtenerPuntos(){
         $this->db->select_sum('kmacumulados');
         $this->db->where('idUsuario', $this->session->userdata('id'));
@@ -58,6 +125,21 @@ class Pasaje_model extends CI_Model
     }
 
 
+    /**
+     * @return mixed
+     */
+    public function getHora()
+    {
+        return $this->hora;
+    }
+
+    /**
+     * @param mixed $hora
+     */
+    public function setHora($hora)
+    {
+        $this->hora = $hora;
+    }
 
 
     /**
@@ -254,7 +336,37 @@ class Pasaje_model extends CI_Model
     }
 
 
+    /**
+     * @return mixed
+     */
+    public function getCiudadOrigen()
+    {
+        return $this->ciudadOrigen;
+    }
 
+    /**
+     * @param mixed $ciudadOrigen
+     */
+    public function setCiudadOrigen($ciudadOrigen)
+    {
+        $this->ciudadOrigen = $ciudadOrigen;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCiudadDestino()
+    {
+        return $this->ciudadDestino;
+    }
+
+    /**
+     * @param mixed $ciudadDestino
+     */
+    public function setCiudadDestino($ciudadDestino)
+    {
+        $this->ciudadDestino = $ciudadDestino;
+    }
 }
 
 /* End of file .php */

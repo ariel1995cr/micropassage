@@ -2,27 +2,28 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pasaje extends CI_Controller {
+
+
     public function __construct()
     {
         parent::__construct();
         if (!$this->session->userdata('id')){
             redirect(index.php/Login);
         }
+        $this->load->model('Pasaje_model');
     }
 
     public function compraExitosa()
 	{
-        $this->load->model('Pasaje_model');
 
         $butacas =  $this->input->post('ButacasCompradas');
-        print_r($butacas);
         $butacas = json_decode($butacas);
         echo "<br>";
 
-        print_r($butacas);
+        $data['butacas'] = $butacas;
+
 
         $arrayPasajes = array();
-        $x = 0;
         foreach($butacas as $butaca){
             if($butaca->metodoPago=="Tarjeta"){
 
@@ -36,7 +37,7 @@ class Pasaje extends CI_Controller {
                  $pasaje->setNombre($butaca->nombre);
                  $pasaje->setApellido($butaca->apellido);
                  $pasaje->setDniAsignado($butaca->dni);
-                if($this->$this->session->userdata('pasajeroFrecuente')=="SI"){
+                if($this->session->userdata('pasajeroFrecuente')=="SI"){
                     if ($butaca->tipoAsiento="promocional"){
                          $pasaje->setKmacumulados($butaca->valorPasaje+($butaca->valorPasaje*0.05));
                     }else if($butaca->tipoAsiento="ejecutivo"){
@@ -70,24 +71,24 @@ class Pasaje extends CI_Controller {
         }
 
         $this->load->model('Pasaje_model');
-        $this->Pasaje_model->AgregarPasaje($arrayPasajes);
+        $pasajes = $this->Pasaje_model->AgregarPasaje($arrayPasajes);
+        $data['asientos'] = $this->Pasaje_model->ConseguirPasajes($pasajes);
+
+        $this->load->view('pasaje/CompraExitosa',$data);
 
 	}
 
     public function compraExitosaPuntos()
     {
         $butacas =  $this->input->post('ButacasCompradas');
-        print_r($butacas);
         $butacas = json_decode($butacas);
         echo "<br>";
 
-        print_r($butacas);
-
         $arrayPasajes = array();
-        $this->load->model('Pasaje_model');
+
 
         $x = 0;
-        foreach($butacas as $butaca){
+        foreach($butacas[0] as $butaca){
             $pasaje = new $this->Pasaje_model;
             $pasaje->setIdViaje($butaca->idViaje);
             $pasaje->setIdFrecuencia($butaca->idFrecuencia);
@@ -106,21 +107,32 @@ class Pasaje extends CI_Controller {
         }
 
         $this->load->model('Pasaje_model');
-        $this->Pasaje_model->AgregarPasaje($arrayPasajes);
+        $pasajes = $this->Pasaje_model->AgregarPasaje($arrayPasajes);
+        print_r($pasajes);
 
     }
 
-    public function ImprimirPasaje($idBoleto){
+    public function ImprimirPasaje($boleto)
+    {
 
-        $viewdata=[];
+        $viewdata = [];
 
-        $this->load->view('pasaje/ImprimirPasaje', $viewdata, TRUE);
+
+        $this->Pasaje_model->setIdBoleto($boleto);
+
+        $pasaje = $this->Pasaje_model->ObtenerPasajeID();
+
+        $viewdata['datos'] = $pasaje[0];
+
+
+
+        $html = $this->load->view('pasaje/ImprimirPasaje', $viewdata, TRUE);
         // Cargamos la librería
         $this->load->library('pdfgenerator');
         // definamos un nombre para el archivo. No es necesario agregar la extension .pdf
         $filename = 'comprobante_pago';
         // generamos el PDF. Pasemos por encima de la configuración general y definamos otro tipo de papel
-        $this->pdfgenerator->generate($html, $filename, true, 'Letter', 'portrait');
+        $this->pdfgenerator->generate($html, $filename, true, 'A4', 'landscape');
 
 
     }
