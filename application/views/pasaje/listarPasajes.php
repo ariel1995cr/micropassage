@@ -9,8 +9,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>resources/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.min.js"></script>
+
 
     <!-- SCRIPT JQUERY DATEPICKER -->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
