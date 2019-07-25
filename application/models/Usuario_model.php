@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Usuario_model extends CI_Model
 {
+    private $id;
     private $nombreUsuario;
     private $email;
     private $password;
@@ -12,6 +13,18 @@ class Usuario_model extends CI_Model
     private $dni;
     private $telefono;
     private $pasajeroFrecuente;
+
+    public function actualizarDatos($usuario){
+        $this->db->where('id', $this->session->userdata('id'));
+        $this->db->set('nombres',$usuario->getNombres());
+        $this->db->set('apellido',$usuario->getApellido());
+        $this->db->set('email',$usuario->getEmail());
+        $this->db->set('dni',$usuario->getDni());
+        $this->db->set('telefono',$usuario->getTelefono());
+        $this->db->set('pasajeroFrecuente',$usuario->getPasajeroFrecuente());
+       return $this->db->update('usuario');
+
+    }
 
 
     public function obtenerDatosDni(){
@@ -34,6 +47,20 @@ class Usuario_model extends CI_Model
     public function setNombreUsuario($nombreUsuario)
     {
         $this->nombreUsuario = $nombreUsuario;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }/**
+ * @param mixed $id
+ */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**

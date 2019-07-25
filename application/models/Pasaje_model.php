@@ -30,12 +30,41 @@ class Pasaje_model extends CI_Model
         	//Do your magic here
         }
 
+    public function ContarFilas() {
+        $this->db->where('idUsuario', $this->session->userdata('id'));
+        return $this->db->count_all_results('pasaje');
+    }
+
+
+        public function ObtenerTodoslosPasajes($limit, $start){
+            $this->db->limit($limit, $start);
+            $this->db->select('pasaje.idBoleto,
+                            pasaje.idViaje,
+                            pasaje.idFrecuencia,
+                            pasaje.nombre,
+                            pasaje.dniAsignado,
+                            pasaje.apellidos AS apellido,
+                            pasaje.nroButaca,
+                            pasaje.fechaPasaje,
+                            viaje.idciudadorigen,
+                            viaje.idciudadestino,
+                            ciudadOrigen.nombreCiudad AS ciudadOrigen,
+                            ciudadDestino.nombreCiudad AS ciudadDestino,
+                            frecuencia.hora');
+            $this->db->where('idUsuario', $this->session->userdata('id'));
+            $this->db->join('Viaje', 'Viaje.idViaje = pasaje.idViaje', 'inner');
+            $this->db->join('ciudad as ciudadOrigen', 'viaje.idciudadorigen = ciudadOrigen.idCiudad', 'inner');
+            $this->db->join('ciudad as ciudadDestino', 'viaje.idciudadestino = ciudadDestino.idCiudad', 'inner');
+            $this->db->join('frecuencia', 'frecuencia.idViaje = viaje.idViaje AND pasaje.idFrecuencia = frecuencia.idFrecuencia', 'inner');
+            return $this->db->get('pasaje')->custom_result_object('Pasaje_model');
+        }
+
     public function ObtenerPasajeID(){
         $this->db->select('pasaje.idBoleto,
                             pasaje.idViaje,
                             pasaje.idFrecuencia,
                             pasaje.nombre,
-                            pasaje.dniAsignado,
+                            pasaje.dniAsignado,     
                             pasaje.apellidos AS apellido,
                             pasaje.nroButaca,
                             pasaje.fechaPasaje,

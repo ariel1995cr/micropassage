@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, mi.inimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>resources/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
@@ -26,17 +26,129 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     </script>
 
-    <script type="text/javascript" src="/PassageSystem/resources/js/comprar.js">
-        var datosViaje = '<?php echo json_encode($datosViaje[0]); ?>';
-        datosViaje = JSON.parse(datosViaje);
-        console.log(datosViaje);
-        var butacasElegidas = [];
-        var tipoAsiento = "normal";
-        var fechaViaje = "<?php echo $datos['fecha'] ?>";
-        var origen = datosViaje.origen;
-        var destino = datosViaje.destino;
-        var PuntosDisponibles = '<?php echo $puntos[0]->getKmacumulados()?>';
+    <script>
 
+
+        $(function() {
+            var datosViaje = '<?php echo json_encode($datosViaje[0]); ?>';
+            datosViaje = JSON.parse(datosViaje);
+            console.log(datosViaje);
+            var butacasElegidas = [];
+            var tipoAsiento = "normal";
+            var fechaViaje = "<?php echo $datos['fecha'] ?>";
+            var origen = datosViaje.origen;
+            var destino = datosViaje.destino;
+            var PuntosDisponibles = '<?php echo $puntos[0]->getKmacumulados()?>';
+
+
+            $(".badge-primary").click(function(e) {
+                var valorPasaje = document.getElementById("tarifa").innerText;
+                var valorPasajePuntos = valorPasaje * 2.5;
+                if (parseInt(e.target.innerText)>=53){
+                    valorPasaje = valorPasaje * 2;
+                    tipoAsiento = "ejecutivo";
+                } else if (parseInt(e.target.innerText)>=24 && parseInt(e.target.innerText)<=52){
+                    var descuento = valorPasaje * 0.3;
+                    valorPasaje = valorPasaje - descuento;
+                    tipoAsiento = "promocional";
+                }
+                $.confirm({
+                    title: 'Gracias por Elegirnos!',
+                    content:
+                        '<form action="" class="formName">' +
+                        '<div class="form-group">' +
+                        '<label>Confirma la seleecion de asiento numero: '+e.target.innerText+'</label>' +
+                        '<label>Valor del Pasaje: $'+valorPasaje+'</label>' +
+                        '<label>Valor del Pasaje en Puntos: '+valorPasajePuntos+'</label>' +
+                        '<label>Tipo de Asiento: '+tipoAsiento+'</label>' +
+                        '<label>Ingrese el Nro de Dni:</label>'+
+                        '<input type="text" placeholder="Ingrese Dni" id="dni" class="form-control" required />' +
+                        '<label>Ingrese los Nombres:</label>'+
+                        '<input type="text" placeholder="Ingrese Nombre" id="Nombres" class="name form-control" required />' +
+                        '<label>Ingrese Apellido:</label>'+
+                        '<input type="text" placeholder="Ingrese Apellido" id="Apellido" class="form-control" required />' +
+                        '</div>' +
+                        '</form>',
+                    buttons: {
+                        formSubmit: {
+                            text: 'Confirmar Asiento',
+                            btnClass: 'btn-blue',
+                            action: function () {
+                                var nombre = this.$content.find('#Nombres').val().trim();
+                                var dni = this.$content.find('#dni').val().trim();
+                                var apellido = this.$content.find('#Apellido').val().trim();
+                                var butaca = e.target.innerText;
+                                var idFrecuencia = datosViaje.idFrecuencia;
+                                var idViaje = datosViaje.idViaje;
+                                var metodoPago = "Tarjeta";
+
+                                $("#ButacasElegidas").append("<tr>" +
+                                                             "<td>"+nombre+"</td>"+
+                                                             "<td>"+apellido+"</td>"+
+                                                             "<td>"+dni+"</td>"+
+                                                             "<td>"+e.target.innerText+"</td>"+
+                                                             "<td>"+valorPasaje+"</td>"+
+                                                             "<td>"+tipoAsiento+"</td>"+
+                                                             "<td>"+metodoPago+"</td>"+
+                                                             "</tr>");
+                                $("#"+e.target.innerText+"").removeClass("badge-primary").addClass("badge-danger");
+
+                                butacasElegidas.push({nombre, dni, apellido,butaca,valorPasaje,tipoAsiento, idFrecuencia, idViaje,fechaViaje, origen, destino,metodoPago});
+
+                            }
+                        },
+                        cancel: function () {
+                            //close
+                        },
+
+                        somethingElse: {
+                            text: 'Confirmar Asiento Puntos',
+                            btnClass: 'btn-blue',
+                            keys: ['enter', 'shift'],
+                            action: function(){
+                                if(PuntosDisponibles>valorPasajePuntos){
+                                var nombre = this.$content.find('#Nombres').val().trim();
+                                var dni = this.$content.find('#dni').val().trim();
+                                var apellido = this.$content.find('#Apellido').val().trim();
+                                var butaca = e.target.innerText;
+                                var idFrecuencia = datosViaje.idFrecuencia;
+                                var idViaje = datosViaje.idViaje;
+                                var metodoPago = "Puntos";
+
+                                $("#ButacasElegidas").append("<tr>" +
+                                    "<td>"+nombre+"</td>"+
+                                    "<td>"+apellido+"</td>"+
+                                    "<td>"+dni+"</td>"+
+                                    "<td>"+e.target.innerText+"</td>"+
+                                    "<td>"+valorPasaje+"</td>"+
+                                    "<td>"+tipoAsiento+"</td>"+
+                                    "<td>"+metodoPago+"</td>"+
+                                    "</tr>");
+                                $("#"+e.target.innerText+"").removeClass("badge-primary").addClass("badge-danger");
+
+                                butacasElegidas.push({nombre, dni, apellido,butaca,valorPasaje,tipoAsiento, idFrecuencia, idViaje,fechaViaje, origen, destino,metodoPago});
+
+                                } else {
+                                    $.alert('No le Alcanza los Puntos para Comprar el Asiento pruebe con otro Metodo!');
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+
+            $('#ConfirmarCompra').click(function () {
+
+                console.log(JSON.stringify(butacasElegidas));
+                $("#DatosCompra").append("<input name='datos' value='" +
+                    JSON.stringify(butacasElegidas) +
+                    "'hidden>")
+
+                $("#DatosCompra").submit();
+
+            })
+        });
     </script>
 </head>
 <body>

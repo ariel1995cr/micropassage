@@ -39,11 +39,11 @@ class Pasaje extends CI_Controller {
                  $pasaje->setDniAsignado($butaca->dni);
                 if($this->session->userdata('pasajeroFrecuente')=="SI"){
                     if ($butaca->tipoAsiento="promocional"){
-                         $pasaje->setKmacumulados($butaca->valorPasaje+($butaca->valorPasaje*0.05));
+                         $pasaje->setKmacumulados($butaca->valorPasaje*0.05);
                     }else if($butaca->tipoAsiento="ejecutivo"){
-                         $pasaje->setKmacumulados($butaca->valorPasaje+($butaca->valorPasaje*0.50));
+                         $pasaje->setKmacumulados($butaca->valorPasaje*0.50);
                     }else{
-                         $pasaje->setKmacumulados($butaca->valorPasaje+($butaca->valorPasaje*0.25));
+                         $pasaje->setKmacumulados($butaca->valorPasaje*0.25);
                     }
                 }else {
                      $pasaje->setKmacumulados(0);
@@ -133,6 +133,60 @@ class Pasaje extends CI_Controller {
         $filename = 'comprobante_pago';
         // generamos el PDF. Pasemos por encima de la configuración general y definamos otro tipo de papel
         $this->pdfgenerator->generate($html, $filename, true, 'A4', 'landscape');
+
+
+    }
+
+    public function PasajesComprados()
+    {
+
+        $this->load->library('pagination');
+        $pasaje = $this->Pasaje_model;
+
+        $config['base_url'] = 'http://localhost/PassageSystem/index.php/Pasaje/PasajesComprados/page/';
+        $config['total_rows'] = $pasaje->ContarFilas();
+        $config['per_page'] = 10;
+        $config["uri_segment"] = 4;
+
+        $config['full_tag_open'] = "<ul class='pagination'>";
+        $config['full_tag_close'] ="</ul>";
+        $config['num_tag_open'] = '<li class="page-link">';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = "<li class='disabled'><li class='page-link'><a href='#'>";
+        $config['cur_tag_close'] = "<span class='sr-only'></span></a></li>";
+        $config['next_tag_open'] = "<li class='page-link'>";
+        $config['next_tagl_close'] = "</li>";
+        $config['prev_tag_open'] = "<li class='page-link'>";
+        $config['prev_tagl_close'] = "</li>";
+        $config['first_tag_open'] = "<li class='page-link'>";
+        $config['first_tagl_close'] = "</li>";
+        $config['last_tag_open'] = "<li class='page-link'>";
+        $config['last_tagl_close'] = "</li>";
+
+
+
+
+        $config['prev_link'] = '<a class="page-link" href="#">Previous Page</a>';
+        $config['prev_tag_open'] = '<li class="page-item">';
+        $config['prev_tag_close'] = '</li>';
+
+
+        $config['next_link'] = '<a class="page-link" href="#">Next Page</a>';
+        $config['next_tag_open'] = '<li class="page-item">';
+        $config['next_tag_close'] = '</li>';
+
+
+
+        $this->session->userdata('id');
+
+
+        $data['paginacion'] = $this->pagination->initialize($config);
+        $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+
+
+        $data['pasajes'] = $pasaje->ObtenerTodoslosPasajes($config["per_page"], $page);
+
+        $this->load->view('pasaje/listarPasajes.php', $data);
 
 
     }

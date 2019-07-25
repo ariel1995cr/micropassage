@@ -31,7 +31,7 @@ class Ventas extends CI_Controller {
     }
     
     function Comprar($fecha,$idViaje,$idFrecuencia){
-
+        $fechaviaje = $fecha;
         $fecha = explode("-",$fecha);
 
         $fecha = $fecha[2]."-".$fecha[1]."-".$fecha[0];
@@ -52,12 +52,19 @@ class Ventas extends CI_Controller {
 
         $data['datosViaje'] = $this->Viaje_model->obtenerViaje($idViaje,$idFrecuencia);
 
+        $hoy = date_create();
+
+        $fechaViaje =  date_create($fechaviaje." ".$data['datosViaje'][0]->hora);
+        $fechaViaje->modify('-2 hours');
         $this->load->model('Pasaje_model');
         $data['puntos'] = $this->Pasaje_model->ObtenerPuntos();
 
+        if ($hoy<$fechaViaje){
+            $this->load->view('venta/comprar.php', $data);
+        } else if($hoy>$fechaviaje){
+            redirect("/");
+        }
 
-
-        $this->load->view('venta/comprar.php', $data);
 
     }
 

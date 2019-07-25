@@ -1,3 +1,5 @@
+var butacasElegidas = [];
+console.log(datosViaje);
 $(function() {
 
 

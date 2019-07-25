@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>resources/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     
@@ -21,11 +21,27 @@
 
 <body>
 <header class="fluid-container">
-    <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="">
             <img src="../recursos/images/logo.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
             PassageSystem
         </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/PassageSystem/index.php/Usuario/">Mi Perfil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/PassageSystem/index.php/Pasaje/PasajesComprados">Compras Efectuadas</span></a>
+                </li>
+            </ul>
+        </div>
     </nav>
 </header>
 <section class="container">
@@ -56,15 +72,11 @@
                     </div>
 
                     <div class="d-flex flex-row bd-highlight mb-3">
-                        <div class="p-2 w-75 bd-highlight">
+                        <div class="p-2 bd-highlight" style="width: 58%">
                             DESTINO
                             <select id="NombreDestino" class="form-control form-control-lg" disabled>
                                 <option>Large select</option>
                             </select>
-                        </div>
-                        <div class="p-2 bd-highlight">
-                            Fecha Vuelta
-                            <input type="email" class="form-control form-control-lg" id="fechaPartida" placeholder="">
                         </div>
                     </div>
                     <button type="button" id="BuscarPasaje" class="mt-3 btn btn-primary btn-lg btn-block">Buscar Pasaje</button>

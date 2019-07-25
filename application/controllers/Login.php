@@ -21,6 +21,7 @@ class Login extends CI_Controller {
         $this->load->view('welcome_message');
     }
 
+
     function validation()
     {
         $this->form_validation->set_rules('email', 'Email Address', 'required|trim');
