@@ -15,9 +15,11 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="/PassageSystem/resources/css/jquery-ui.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!--SCRIPT PARA ALERT-->
-    <link rel="stylesheet" href="/PassageSystem/resources/css/jquery-confirm.min.css">
-    <script type="text/javascript" src="/PassageSystem/resources/js/jquery-confirm.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="/PassageSystem/resources/css/jquery.datetimepicker.css">
+    <script src="/PassageSystem/resources/js/jquery.datetimepicker.full.min.js"></script>
+
 </head>
 <body>
 <header class="fluid-container">
@@ -46,48 +48,23 @@
 </header>
 <section class="container">
     <form id="FORMHorario" action="/PassageSystem/index.php/Viaje/agregarFrecuenciasViajes" method="post">
-        <div class="row">
-            <div class="col">
-                <label>CIUDAD DE ORIGEN</label>
-                <select name="Ciudad Origen" class="form-control form-control-lg">
-                    <option>Elegir Origen</option>
-                    <?php
-                    foreach ($ciudades as $ciudad) {
-                        echo "<option value='$ciudad->idCiudad'>".$ciudad->nombreCiudad."</option>";
-                    }
-                    ?>
-                </select>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div class="input-group date"  data-target-input="nearest">
+                            <input type="text" id="datetimepicker3" class="form-control datetimepicker-input" data-target="#datetimepicker3"/>
+                        </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    $(function () {
+                        $('#datetimepicker3').datetimepicker({
+                            datepicker:false,
+                            format:'H:i'
+                        });
+                    });
+                </script>
             </div>
-            <div class="col">
-                <LABEL>CIUDAD DE DESTINO</LABEL>
-                <select name="Ciudad Destino" class="form-control form-control-lg">
-                    <option>Elegir Destino</option>
-                    <?php
-                    foreach ($ciudades as $ciudad) {
-                        echo "<option value='$ciudad->idCiudad'>".$ciudad->nombreCiudad."</option>";
-                    }
-                    ?>
-                </select>
-                </select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label>Tarifa</label>
-                <input type="text" name="tarifa" class="form-control form-control-lg" placeholder="VALOR DE TARIFA">
-            </div>
-            <div class="col">
-                <label>Id Colectivo</label>
-                <select name="Ciudad Destino" class="form-control form-control-lg">
-                    <option>Elegir Colectivo</option>
-                    <?php
-                    foreach ($colectivos as $colectivo) {
-                        echo "<option value='$colectivo->idCiudad'>".$colectivo->nombreCiudad."</option>";
-                    }
-                    ?>
-                </select>
-            </div>
-        </div>
 
         <button type="submit" class="btn btn-block btn-primary" id='AgregarHorarios'>Agregar Viaje</button>
     </form>

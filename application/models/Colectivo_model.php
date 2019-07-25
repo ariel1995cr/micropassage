@@ -10,6 +10,9 @@ class Colectivo_model extends CI_Model
     {
         parent::__construct();
     }
+    function ObtenerColectivo(){
+      return  $this->db->get('colectivo')->custom_result_object('Colectivo_model');
+    }
     
     /*
      * Get colectivo by idColectivo

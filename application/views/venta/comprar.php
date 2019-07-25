@@ -41,7 +41,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             var PuntosDisponibles = '<?php echo $puntos[0]->getKmacumulados()?>';
 
 
-            $(".badge-primary").click(function(e) {
+            $(".btn-outline-primary").click(function(e) {
                 var valorPasaje = document.getElementById("tarifa").innerText;
                 var valorPasajePuntos = valorPasaje * 2.5;
                 if (parseInt(e.target.innerText)>=53){
@@ -233,15 +233,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             echo "<tr>";
                             for ($x;$x<$datosViaje[0]->capacidadSuperior+1;$x++){
                                 if($x%4==0) {
-                                    echo "<th class='badge-primary border border-light' id='$x'>";
-                                    echo $x;
-                                    echo "</th>";
-                                    echo "</tr>";
+                                    if($x<=$datosViaje[0]->capacidadSuperior-28){
+                                        echo "<th class='btn-outline-primary border border-warning' id='$x'>";
+                                        echo $x;
+                                        echo "</th>";
+                                        echo "</tr>";
+                                    } else {
+                                        echo "<th class='btn-outline-primary border border-success' id='$x'>";
+                                        echo $x;
+                                        echo "</th>";
+                                        echo "</tr>";
+                                    }
                                 } else {
-                                    echo"<th class='badge-primary border border-light' id='$x'>";
-                                    echo $x;
-                                    echo"</th>";
-
+                                    if ($x<$datosViaje[0]->capacidadSuperior-28){
+                                        echo"<th class='btn-outline-primary border border-warning' id='$x'>";
+                                        echo $x;
+                                        echo"</th>";
+                                    } else {
+                                        echo"<th class='btn-outline-primary border border-success' id='$x'>";
+                                        echo $x;
+                                        echo"</th>";
+                                    }
                                 }
                             }
                         } else {
@@ -254,11 +266,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         echo $x;
                                         echo"</th>";
                                         echo"</tr>";
-                                    } else {
-                                        echo"<th class='badge-primary border border-light' id='$x'>";
+                                    } else if($x<=$datosViaje[0]->capacidadSuperior-28){
+                                        echo "<th class='btn-outline-primary border border-warning' id='$x'>";
                                         echo $x;
-                                        echo"</th>";
-                                        echo"</tr>";
+                                        echo "</th>";
+                                        echo "</tr>";
+                                    } else {
+                                        echo "<th class='btn-outline-primary border border-success' id='$x'>";
+                                        echo $x;
+                                        echo "</th>";
+                                        echo "</tr>";
                                     }
                                 }
 
@@ -267,8 +284,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     echo"<th class='badge-danger border border-light' id='$x'>";
                                     echo $x;
                                     echo"</th>";
+                                } elseif ($x<$datosViaje[0]->capacidadSuperior-28){
+                                    echo"<th class='btn-outline-primary border border-warning' id='$x'>";
+                                    echo $x;
+                                    echo"</th>";
                                 } else {
-                                    echo"<th class='badge-primary border border-light' id='$x'>";
+                                    echo"<th class='btn-outline-primary border border-success' id='$x'>";
                                     echo $x;
                                     echo"</th>";
                                 }
@@ -295,12 +316,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             for ($x2;$x2<$datosViaje[0]->capacidadInferior+1;$x2++){
 
                                 if($x2%3==0) {
-                                    echo "<th class='badge-primary border border-light' id='$x'>";
+                                    echo "<th class='btn-outline-primary border border-primary' id='$x'>";
                                     echo $x;
                                     echo "</th>";
                                     echo "</tr>";
                                 } else {
-                                    echo"<th class='badge-primary border border-light' id='$x'>";
+                                    echo"<th class='btn-outline-primary border border-primary' id='$x'>";
                                     echo $x;
                                     echo"</th>";
 
@@ -319,7 +340,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         echo"</th>";
                                         echo"</tr>";
                                     } else {
-                                        echo"<th class='badge-primary border border-light' id='$x'>";
+                                        echo"<th class='btn-outline-primary border border-primary' id='$x'>";
                                         echo $x;
                                         echo"</th>";
                                         echo"</tr>";
@@ -328,11 +349,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 } else {
 
                                         if (in_array($x,$butacas)){
-                                            echo"<th class='badge-danger border border-light' id='$x'>";
+                                            echo"<th class='btn-outline-primary border border-primary' id='$x'>";
                                             echo $x;
                                             echo"</th>";
                                         } else {
-                                            echo"<th class='badge-primary border border-light' id='$x'>";
+                                            echo"<th class='btn-outline-primary border border-primary' id='$x'>";
                                             echo $x;
                                             echo"</th>";
                                         }

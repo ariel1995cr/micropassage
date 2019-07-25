@@ -31,6 +31,7 @@ class Ventas extends CI_Controller {
     }
     
     function Comprar($fecha,$idViaje,$idFrecuencia){
+        if (!empty($fecha) or !empty($idViaje) or !empty($idFrecuencia)) {
         $fechaviaje = $fecha;
         $fecha = explode("-",$fecha);
 
@@ -62,6 +63,9 @@ class Ventas extends CI_Controller {
         if ($hoy<$fechaViaje){
             $this->load->view('venta/comprar.php', $data);
         } else if($hoy>$fechaviaje){
+            redirect("/");
+        }
+        } else {
             redirect("/");
         }
 
@@ -149,8 +153,7 @@ class Ventas extends CI_Controller {
             $data['preference']->items = array($data['item']);
             $data['preference']->payment_methods = array(
                 "excluded_payment_types" => array(
-                    array("id" => "ticket"),
-                    array("id" => "atm")
+                    array("id" => "ticket")
                 ),
                 "installments" => 12
             );

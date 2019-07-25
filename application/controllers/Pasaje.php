@@ -84,11 +84,12 @@ class Pasaje extends CI_Controller {
         $butacas = json_decode($butacas);
         echo "<br>";
 
+
         $arrayPasajes = array();
 
 
         $x = 0;
-        foreach($butacas[0] as $butaca){
+        foreach($butacas as $butaca){
             $pasaje = new $this->Pasaje_model;
             $pasaje->setIdViaje($butaca->idViaje);
             $pasaje->setIdFrecuencia($butaca->idFrecuencia);
@@ -108,7 +109,10 @@ class Pasaje extends CI_Controller {
 
         $this->load->model('Pasaje_model');
         $pasajes = $this->Pasaje_model->AgregarPasaje($arrayPasajes);
-        print_r($pasajes);
+        $data['asientos'] = $this->Pasaje_model->ConseguirPasajes($pasajes);
+
+        $this->load->view('pasaje/CompraExitosa',$data);
+
 
     }
 

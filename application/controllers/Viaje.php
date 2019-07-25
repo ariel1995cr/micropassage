@@ -10,7 +10,23 @@ class Viaje extends CI_Controller{
         parent::__construct();
         $this->load->model('Viaje_model');
     } 
-    
+
+
+    function agregarViajes(){
+        $this->load->model('Ciudad_model');
+        $data['ciudades'] = $this->Ciudad_model->obtener_ciudades();
+
+        $this->load->model('Colectivo_model');
+        $data['colectivos'] = $this->Colectivo_model->ObtenerColectivo();
+
+        $this->load->view('viaje/add.php', $data);
+    }
+
+    function agregarFrecuenciasViajes(){
+        $post = $this->input->post();
+        print_r($post);
+        $this->load->view('viaje/agregarFrecuencia');
+    }
 
     function obtenerViajesporID(){
         $origen = $this->input->post('Origen');
@@ -42,7 +58,7 @@ class Viaje extends CI_Controller{
      */
     function index()
     {
-        $params['limit'] = RECORDS_PER_PAGE; 
+        $params['limit'] = 5;
         $params['offset'] = ($this->input->get('per_page')) ? $this->input->get('per_page') : 0;
         
         $config = $this->config->item('pagination');
