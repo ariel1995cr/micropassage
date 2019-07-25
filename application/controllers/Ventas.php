@@ -69,7 +69,8 @@ class Ventas extends CI_Controller {
     }
 
     function terminarCompra(){
-        if (!empty($this->input->post('datos'))){
+        $datos = $this->input->post('datos');
+        if (!empty($datos)){
 
 
             $datos = $this->input->post('datos');
