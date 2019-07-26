@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>PASAJES COMPRADOS|PASSAGESYSTEM</title>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>resources/css/bootstrap.min.css">
     <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.js"></script>
     <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.min.js"></script>
@@ -21,10 +21,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <script src="/PassageSystem/resources/js/inicio.js">
     </script>
 </head>
+
+<body>
 <header class="fluid-container">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="">
-            <img src="../recursos/images/logo.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+            <img src="/PassageSystem/resources/img/logo.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
             PassageSystem
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +81,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     </article>
 </section>
-<body>
+
 
 </body>
+<footer class="container-fluid btn-primary">
+
+</footer>
 </html>

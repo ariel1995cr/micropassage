@@ -23,9 +23,27 @@ class Viaje extends CI_Controller{
     }
 
     function agregarFrecuenciasViajes(){
-        $post = $this->input->post();
-        print_r($post);
-        $this->load->view('viaje/agregarFrecuencia');
+        $this->load->library('form_validation');
+
+        print_r($this->input->post());
+
+        $this->form_validation->set_rules('ciudadOrigen', 'ciudad Origen', 'trim|required');
+        $this->form_validation->set_rules('CiudadDestino', 'ciudad Destino', 'trim|required|differs[ciudadOrigen]');
+        $this->form_validation->set_rules('tarifa', 'tarifa', 'trim|required');
+        $this->form_validation->set_rules('ColectivoID', 'Colectivo ID', 'trim|required');
+        $data['ciudadOrigen'] = $this->input->post('ciudadOrigen');
+        $data['CiudadDestino'] = $this->input->post('CiudadDestino');
+        $data['tarifa'] = $this->input->post('tarifa');
+        $data['ColectivoID'] = $this->input->post('ColectivoID');
+        if ($this->form_validation->run() == TRUE) {
+            $this->load->view('viaje/agregarFrecuencia', $data);
+        } else {
+            $this->agregarViajes();
+        }
+    }
+
+    function AgregadoViaje(){
+        print_r($this->input->post());
     }
 
     function obtenerViajesporID(){
@@ -58,6 +76,7 @@ class Viaje extends CI_Controller{
      */
     function index()
     {
+        $this->load->library('pagination');
         $params['limit'] = 5;
         $params['offset'] = ($this->input->get('per_page')) ? $this->input->get('per_page') : 0;
         
@@ -69,7 +88,7 @@ class Viaje extends CI_Controller{
         $data['viajes'] = $this->Viaje_model->get_all_viajes($params);
         
         $data['_view'] = 'viaje/index';
-        $this->load->view('layouts/main',$data);
+        print_r($data);
     }
 
     /*
@@ -110,67 +129,4 @@ class Viaje extends CI_Controller{
         }
     }  
 
-    /*
-     * Editing a viaje
-     */
-    function edit($idViaje)
-    {   
-        // check if the viaje exists before trying to edit it
-        $data['viaje'] = $this->Viaje_model->get_viaje($idViaje);
-        
-        if(isset($data['viaje']['idViaje']))
-        {
-            $this->load->library('form_validation');
-
-			$this->form_validation->set_rules('idcolectivo','Idcolectivo','required|integer');
-			$this->form_validation->set_rules('idciudadorigen','Idciudadorigen','required|integer');
-			$this->form_validation->set_rules('idciudadestino','Idciudadestino','required|integer');
-			$this->form_validation->set_rules('tarifa','Tarifa','required');
-		
-			if($this->form_validation->run())     
-            {   
-                $params = array(
-					'idcolectivo' => $this->input->post('idcolectivo'),
-					'idciudadorigen' => $this->input->post('idciudadorigen'),
-					'idciudadestino' => $this->input->post('idciudadestino'),
-					'tarifa' => $this->input->post('tarifa'),
-                );
-
-                $this->Viaje_model->update_viaje($idViaje,$params);            
-                redirect('viaje/index');
-            }
-            else
-            {
-				$this->load->model('Colectivo_model');
-				$data['all_colectivos'] = $this->Colectivo_model->get_all_colectivos();
-
-				$this->load->model('Ciudad_model');
-				$data['all_ciudades'] = $this->Ciudad_model->get_all_ciudades();
-				$data['all_ciudades'] = $this->Ciudad_model->get_all_ciudades();
-
-                $data['_view'] = 'viaje/edit';
-                $this->load->view('layouts/main',$data);
-            }
-        }
-        else
-            show_error('The viaje you are trying to edit does not exist.');
-    } 
-
-    /*
-     * Deleting viaje
-     */
-    function remove($idViaje)
-    {
-        $viaje = $this->Viaje_model->get_viaje($idViaje);
-
-        // check if the viaje exists before trying to delete it
-        if(isset($viaje['idViaje']))
-        {
-            $this->Viaje_model->delete_viaje($idViaje);
-            redirect('viaje/index');
-        }
-        else
-            show_error('The viaje you are trying to delete does not exist.');
-    }
-    
 }

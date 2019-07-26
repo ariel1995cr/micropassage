@@ -70,6 +70,42 @@ class Usuario extends CI_Controller {
             redirect('index.php');
         }
     }
+
+
+    function cambiarContrasenia(){
+        $boton=$this->input->Post('confirmarContrasenia');
+        if ($boton == "Guardar") {
+            $this->load->library('encrypt');
+            $this->load->library('form_validation');
+            $this->form_validation->set_rules('contraseñaActual', 'contraseña actual','min_length[6]|required');
+            $this->form_validation->set_rules('contraseñaNueva', 'contraseña nueva','min_length[6]|required|disffers[contraseñaActual]');
+            $this->form_validation->set_rules('contraseñaRepetir', 'Repetir contraseña nueva','min_length[6]|required|matches[contraseñaNueva]');
+            if ($this->form_validation->run() == "false") {
+                redirect('/index.php/usuario/cambiarContrasenia');
+
+            }else {
+                $this->load->model('Usuario_model');
+                $usuario = $this->Usuario_model;
+                $verification_key = MD5(rand());
+                $contraseñaNueva = $this->input->post('contraseñaNueva');
+                $claveEncriptada = $this->encrypt->encode($contraseñaNueva);
+                $usuario->setPassword($claveEncriptada);
+                $resultado = $usuario->actualizarContrasenia($verification_key);
+                if ($resultado == "true") {
+                    $this->session->sess_destroy();
+                    redirect("index.php/Ventas");
+                }else {
+                    redirect("index.php");
+                }
+            }
+        }else {
+            $this->load->view('usuario/cambiarContrasenia');
+        }
+
+    }
+
+
+
     function cerrarSesion(){
         $this->session->sess_destroy();
         $this->session->set_tempdata('message', 'Cerro Session Correctamente', 60);

@@ -16,7 +16,8 @@ class Frecuencia extends CI_Controller{
      */
     function index()
     {
-        $params['limit'] = RECORDS_PER_PAGE; 
+        $this->load->library('pagination');
+        $params['limit'] = 10;
         $params['offset'] = ($this->input->get('per_page')) ? $this->input->get('per_page') : 0;
         
         $config = $this->config->item('pagination');
@@ -27,96 +28,8 @@ class Frecuencia extends CI_Controller{
         $data['frecuencias'] = $this->Frecuencia_model->get_all_frecuencias($params);
         
         $data['_view'] = 'frecuencia/index';
-        $this->load->view('layouts/main',$data);
+        print_r($data);
     }
 
-    /*
-     * Adding a new frecuencia
-     */
-    function add()
-    {   
-        $this->load->library('form_validation');
 
-		$this->form_validation->set_rules('dia','Dia','required');
-		$this->form_validation->set_rules('hora','Hora','required');
-		$this->form_validation->set_rules('idViaje','IdViaje','required');
-		
-		if($this->form_validation->run())     
-        {   
-            $params = array(
-				'dia' => $this->input->post('dia'),
-				'idViaje' => $this->input->post('idViaje'),
-				'hora' => $this->input->post('hora'),
-            );
-            
-            $frecuencia_id = $this->Frecuencia_model->add_frecuencia($params);
-            redirect('frecuencia/index');
-        }
-        else
-        {
-			$this->load->model('Viaje_model');
-			$data['all_viajes'] = $this->Viaje_model->get_all_viajes();
-            
-            $data['_view'] = 'frecuencia/add';
-            $this->load->view('layouts/main',$data);
-        }
-    }  
-
-    /*
-     * Editing a frecuencia
-     */
-    function edit($idFrecuencia)
-    {   
-        // check if the frecuencia exists before trying to edit it
-        $data['frecuencia'] = $this->Frecuencia_model->get_frecuencia($idFrecuencia);
-        
-        if(isset($data['frecuencia']['idFrecuencia']))
-        {
-            $this->load->library('form_validation');
-
-			$this->form_validation->set_rules('dia','Dia','required');
-			$this->form_validation->set_rules('hora','Hora','required');
-			$this->form_validation->set_rules('idViaje','IdViaje','required');
-		
-			if($this->form_validation->run())     
-            {   
-                $params = array(
-					'dia' => $this->input->post('dia'),
-					'idViaje' => $this->input->post('idViaje'),
-					'hora' => $this->input->post('hora'),
-                );
-
-                $this->Frecuencia_model->update_frecuencia($idFrecuencia,$params);            
-                redirect('frecuencia/index');
-            }
-            else
-            {
-				$this->load->model('Viaje_model');
-				$data['all_viajes'] = $this->Viaje_model->get_all_viajes();
-
-                $data['_view'] = 'frecuencia/edit';
-                $this->load->view('layouts/main',$data);
-            }
-        }
-        else
-            show_error('The frecuencia you are trying to edit does not exist.');
-    } 
-
-    /*
-     * Deleting frecuencia
-     */
-    function remove($idFrecuencia)
-    {
-        $frecuencia = $this->Frecuencia_model->get_frecuencia($idFrecuencia);
-
-        // check if the frecuencia exists before trying to delete it
-        if(isset($frecuencia['idFrecuencia']))
-        {
-            $this->Frecuencia_model->delete_frecuencia($idFrecuencia);
-            redirect('frecuencia/index');
-        }
-        else
-            show_error('The frecuencia you are trying to delete does not exist.');
-    }
-    
 }

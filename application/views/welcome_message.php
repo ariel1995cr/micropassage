@@ -8,9 +8,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>INICIAR SESION|PASSAGESYSTEM</title>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>resources/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body>
 <section>
@@ -40,6 +39,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <input type="password" name="password" class="form-control" id="formGroupExampleInput2" placeholder="Another input">
                         </div>
                         <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        <a href="/PassageSystem/index.php/Registrar">Registrarme</a>
                     </form>
                 </div>
             </div>

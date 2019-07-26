@@ -18,7 +18,6 @@ class Pasaje extends CI_Controller {
 
         $butacas =  $this->input->post('ButacasCompradas');
         $butacas = json_decode($butacas);
-        echo "<br>";
 
         $data['butacas'] = $butacas;
 
@@ -31,7 +30,14 @@ class Pasaje extends CI_Controller {
                  $pasaje->setIdViaje($butaca->idViaje);
                  $pasaje->setIdFrecuencia($butaca->idFrecuencia);
                  $pasaje->setIdUsuario($this->session->userdata('id'));
-                 $pasaje->setPrecioPasaje($butaca->valorPasaje);
+
+                if ($butaca->tipoAsiento="promocional"){
+                    $pasaje->setPrecioPasaje($butaca->valorPasaje-($butaca->valorPasaje*0.30));
+                }else if($butaca->tipoAsiento="ejecutivo"){
+                    $pasaje->setPrecioPasaje($butaca->valorPasaje*2);
+                }else{
+                    $$pasaje->setPrecioPasaje($butaca->valorPasaje);
+                }
                  $pasaje->setNroButaca($butaca->butaca);
                  $pasaje->setFechaPasaje($butaca->fechaViaje);
                  $pasaje->setNombre($butaca->nombre);
@@ -82,8 +88,6 @@ class Pasaje extends CI_Controller {
     {
         $butacas =  $this->input->post('ButacasCompradas');
         $butacas = json_decode($butacas);
-        echo "<br>";
-
 
         $arrayPasajes = array();
 

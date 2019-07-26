@@ -1,3 +1,6 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+?>
 <!doctype html>
 <html lang="es">
 <head>
@@ -5,7 +8,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>INICIO|PASSAGESYSTEM</title>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>resources/css/bootstrap.min.css">
     <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.js"></script>
     <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.min.js"></script>
@@ -24,7 +27,7 @@
 <header class="fluid-container">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="">
-            <img src="../recursos/images/logo.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+            <img src="/PassageSystem/resources/img/logo.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
             PassageSystem
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +43,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/PassageSystem/index.php/Pasaje/PasajesComprados">Compras Efectuadas</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/PassageSystem/index.php/Usuario/cerrarSesion">Cerrar Sesion</span></a>
                 </li>
             </ul>
         </div>
@@ -57,7 +63,7 @@
                         <div class="p-2 w-75 bd-highlight">
                             ORIGEN
                             <select id="NombreOrigen" class="form-control form-control-lg">
-                                <option>Seleccionar Ciudad</option>
+                                <option value="">Elegir Ciudad de Partida</option>
                                 <!--SE LLENA EL COMBO BOX-->
                                 <?php
                                 foreach ($ciudades as $ciudad){
@@ -76,13 +82,13 @@
                         <div class="p-2 bd-highlight" style="width: 58%">
                             DESTINO
                             <select id="NombreDestino" class="form-control form-control-lg" disabled>
-                                <option>Large select</option>
+                                <option value="">Elegir Destino</option>
                             </select>
                         </div>
                     </div>
                     <button type="button" id="BuscarPasaje" class="mt-3 btn btn-primary btn-lg btn-block">Buscar Pasaje</button>
                 </div>
-                <div class="p-2 bd-highlight">Flex item</div>
+                <div class="p-2 bd-highlight"><img src="/PassageSystem/resources/img/logo.jpg" class="d-inline-block align-top" alt=""></div>
             </div>
         </div>
 

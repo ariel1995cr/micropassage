@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>AGREGAR VIAJES|PASSAGESYSTEM</title>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>resources/css/bootstrap.min.css">
     <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.js"></script>
     <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.min.js"></script>
@@ -16,8 +16,14 @@
     <link rel="stylesheet" href="/PassageSystem/resources/css/jquery-ui.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!--SCRIPT PARA ALERT-->
-    <link rel="stylesheet" href="/PassageSystem/resources/css/jquery-confirm.min.css">
-    <script type="text/javascript" src="/PassageSystem/resources/js/jquery-confirm.min.js"></script>
+    <script type="text/javascript" src="/PassageSystem/resources/js/jquery.inputmask.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#tarifa").inputmask({"mask": "999.99"});
+        })
+
+    </script>
 </head>
 <body>
 <header class="fluid-container">
@@ -49,8 +55,8 @@
         <div class="row">
             <div class="col">
                 <label>CIUDAD DE ORIGEN</label>
-                <select name="Ciudad Origen" class="form-control form-control-lg">
-                    <option>Elegir Origen</option>
+                <select name="ciudadOrigen" class="form-control form-control-lg">
+                    <option value="">Elegir Origen</option>
                     <?php
                     foreach ($ciudades as $ciudad) {
                         echo "<option value='$ciudad->idCiudad'>".$ciudad->nombreCiudad."</option>";
@@ -60,29 +66,28 @@
             </div>
             <div class="col">
                 <LABEL>CIUDAD DE DESTINO</LABEL>
-                <select name="Ciudad Destino" class="form-control form-control-lg">
-                    <option>Elegir Destino</option>
+                <select name="CiudadDestino" class="form-control form-control-lg">
+                    <option value="">Elegir Destino</option>
                     <?php
                     foreach ($ciudades as $ciudad) {
                         echo "<option value='$ciudad->idCiudad'>".$ciudad->nombreCiudad."</option>";
                     }
                     ?>
                 </select>
-                </select>
             </div>
         </div>
         <div class="row">
             <div class="col">
                 <label>Tarifa</label>
-                <input type="text" name="tarifa" class="form-control form-control-lg" placeholder="VALOR DE TARIFA">
+                <input type="text" id="tarifa" name="tarifa" class="form-control form-control-lg" placeholder="VALOR DE TARIFA">
             </div>
             <div class="col">
                 <label>Id Colectivo</label>
-                <select name="Ciudad Destino" class="form-control form-control-lg">
-                    <option>Elegir Colectivo</option>
+                <select name="ColectivoID" class="form-control form-control-lg">
+                    <option value="">Elegir Colectivo</option>
                     <?php
                     foreach ($colectivos as $colectivo) {
-                        echo "<option value='$colectivo->idCiudad'>".$colectivo->nombreCiudad."</option>";
+                        echo "<option value='$colectivo->idColectivo'>".$colectivo->idColectivo."</option>";
                     }
                     ?>
                 </select>

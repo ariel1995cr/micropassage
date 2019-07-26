@@ -17,8 +17,8 @@ class Ciudad extends CI_Controller{
      */
     function index()
     {
-
-        $params['limit'] = RECORDS_PER_PAGE;
+        $this->load->library('pagination');
+        $params['limit'] = 5;
         $params['offset'] = ($this->input->get('per_page')) ? $this->input->get('per_page') : 0;
         
         $config = $this->config->item('pagination');
@@ -27,85 +27,12 @@ class Ciudad extends CI_Controller{
         $config['per_page'] = 20;
         $this->pagination->initialize($config);
 
-        $data['ciudades'] = $this->Ciudad_model->get_all_ciudades($params);
-        
+        $data['ciudades'] = $this->Ciudad_model->obtener_ciudades($params);
+
         $data['_view'] = 'ciudad/index';
-        $this->load->view('layouts/main',$data);
+        print_r($data);
     }
 
-    /*
-     * Adding a new ciudad
-     */
-    function add()
-    {   
-        $this->load->library('form_validation');
 
-		$this->form_validation->set_rules('nombreCiudad','NombreCiudad','required|max_length[30]|is_unique[nombreCiudad]');
-		
-		if($this->form_validation->run())     
-        {   
-            $params = array(
-				'nombreCiudad' => $this->input->post('nombreCiudad'),
-            );
-            
-            $ciudad_id = $this->Ciudad_model->add_ciudad($params);
-            redirect('ciudad/index');
-        }
-        else
-        {            
-            $data['_view'] = 'ciudad/add';
-            $this->load->view('layouts/main',$data);
-        }
-    }  
-
-    /*
-     * Editing a ciudad
-     */
-    function edit($idCiudad)
-    {   
-        // check if the ciudad exists before trying to edit it
-        $data['ciudad'] = $this->Ciudad_model->get_ciudad($idCiudad);
-        
-        if(isset($data['ciudad']['idCiudad']))
-        {
-            $this->load->library('form_validation');
-
-			$this->form_validation->set_rules('nombreCiudad','NombreCiudad','required|max_length[30]|is_unique[nombreCiudad]');
-		
-			if($this->form_validation->run())     
-            {   
-                $params = array(
-					'nombreCiudad' => $this->input->post('nombreCiudad'),
-                );
-
-                $this->Ciudad_model->update_ciudad($idCiudad,$params);            
-                redirect('ciudad/index');
-            }
-            else
-            {
-                $data['_view'] = 'ciudad/edit';
-                $this->load->view('layouts/main',$data);
-            }
-        }
-        else
-            show_error('The ciudad you are trying to edit does not exist.');
-    } 
-
-    /*
-     * Deleting ciudad
-     */
-    function remove($idCiudad)
-    {
-        $ciudad = $this->Ciudad_model->get_ciudad($idCiudad);
-
-        // check if the ciudad exists before trying to delete it
-        if(isset($ciudad['idCiudad']))
-        {
-            $this->Ciudad_model->delete_ciudad($idCiudad);
-            redirect('ciudad/index');
-        }
-        else
-            show_error('The ciudad you are trying to delete does not exist.');
-    }
     
 }

@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, mi.inimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>SELECCION BUTACA|PASSAGESYSTEM</title>
+    <title>SELECCIONAR BUTACA|PASSAGE SYSTEM</title>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>resources/css/bootstrap.min.css">
     <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.js"></script>
     <script type="text/javascript" src="/PassageSystem/resources/js/jquery-3.4.1.min.js"></script>
@@ -142,51 +142,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         cancel: function () {
                             //close
                         },
-
-                        somethingElse: {
-                            text: 'Confirmar Asiento Puntos',
-                            btnClass: 'btn-blue',
-                            keys: ['enter', 'shift'],
-                            action: function(){
-                                if(PuntosDisponibles>valorPasajePuntos){
-                                var nombre = this.$content.find('#Nombres').val().trim();
-                                var dni = this.$content.find('#dni').val().trim();
-                                var apellido = this.$content.find('#Apellido').val().trim();
-                                var butaca = e.target.innerText;
-                                var idFrecuencia = datosViaje.idFrecuencia;
-                                var idViaje = datosViaje.idViaje;
-                                var metodoPago = "Puntos";
-                                var resultado = validar(nombre);
-                                if(!resultado){
-                                    return false;
-                                }
-                                resultado = validar(apellido);
-                                if(!resultado){
-                                        return false;
-                                }
-                                resultado = validaDNI(dni);
-                                if(!resultado){
-                                    return false;
-                                }
-
-                                $("#ButacasElegidas").append("<tr>" +
-                                    "<td>"+nombre+"</td>"+
-                                    "<td>"+apellido+"</td>"+
-                                    "<td>"+dni+"</td>"+
-                                    "<td>"+e.target.innerText+"</td>"+
-                                    "<td>"+valorPasaje+"</td>"+
-                                    "<td>"+tipoAsiento+"</td>"+
-                                    "<td>"+metodoPago+"</td>"+
-                                    "</tr>");
-                                $("#"+e.target.innerText+"").removeClass("btn-outline-primary").addClass("badge-primary");
-
-                                butacasElegidas.push({nombre, dni, apellido,butaca,valorPasaje,tipoAsiento, idFrecuencia, idViaje,fechaViaje, origen, destino,metodoPago});
-
-                                } else {
-                                    $.alert('No le Alcanza los Puntos para Comprar el Asiento pruebe con otro Metodo!');
-                                }
-                            }
-                        }
                     }
                 });
             });

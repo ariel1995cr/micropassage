@@ -33,6 +33,15 @@ class Usuario_model extends CI_Model
         return $query->custom_result_object('Usuario_model');
     }
 
+    public function actualizarContrasenia($claveEncriptada)
+    {
+        $this->db->where('id', $this->session->userdata('id'));
+        $this->db->set('password', $this->getPassword());
+        $this->db->set('verification_key', $claveEncriptada);
+
+        return $this->db->update('usuario');
+    }
+
     /**
      * @return mixed
      */

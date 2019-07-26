@@ -18,6 +18,7 @@ $(document).ready(function () {
             console.log(destinos);
             $('#NombreDestino').prop("disabled",false);
             var x=0;
+            $("#NombreDestino").html("<option value=''>Elegir Destino</option>");
             for(x;x<destinos.length;x++){
                 $('#NombreDestino').append("<option value=\'"+destinos[x]['idciudadestino']+"\' >"+destinos[x]['nombreCiudad']+"</option>");
             }
@@ -114,6 +115,7 @@ $(document).ready(function () {
 
             request.done(function( msg ) {
                 var viajes = JSON.parse(msg);
+
 
                 $("#resultado").html('<table class="table">'+
                     '<thead>'+

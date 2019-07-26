@@ -56,6 +56,7 @@ class Pasaje_model extends CI_Model
             $this->db->join('ciudad as ciudadOrigen', 'viaje.idciudadorigen = ciudadOrigen.idCiudad', 'inner');
             $this->db->join('ciudad as ciudadDestino', 'viaje.idciudadestino = ciudadDestino.idCiudad', 'inner');
             $this->db->join('frecuencia', 'frecuencia.idViaje = viaje.idViaje AND pasaje.idFrecuencia = frecuencia.idFrecuencia', 'inner');
+            $this->db->order_by('pasaje.idBoleto', 'DESC');
             return $this->db->get('pasaje')->custom_result_object('Pasaje_model');
         }
 

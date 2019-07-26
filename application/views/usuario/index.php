@@ -1,3 +1,6 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+?>
 <!doctype html>
 <html lang="es">
 <head>
@@ -11,11 +14,30 @@
 </head>
 <body>
 <header class="fluid-container">
-    <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">
-            <img src="../recursos/images/logo.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="">
+            <img src="/PassageSystem/resources/img/logo.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
             PassageSystem
         </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/PassageSystem/index.php/Usuario/">Mi Perfil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/PassageSystem/index.php/Pasaje/PasajesComprados">Compras Efectuadas</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/PassageSystem/index.php/Usuario/cerrarSesion">Cerrar Sesion</span></a>
+                </li>
+            </ul>
+        </div>
     </nav>
 </header>
     <section class="container">
@@ -36,6 +58,9 @@
             <div class="mt-5" role="group" aria-label="Basic example">
                 <form action="/PassageSystem/index.php/Usuario/edit" method="post">
                     <input type="submit" class="btn btn-secondary btn-lg btn-block" name="EditarDatos" value="EditarDatos">
+                </form>
+                <form action="/PassageSystem/index.php/Usuario/cambiarContrasenia" method="post">
+                    <button type="submit" name="button" class="btn btn-secondary btn-lg btn-block">Cambiar contraseña</button>
                 </form>
             </div>
         </article>

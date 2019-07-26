@@ -37,7 +37,7 @@ class Registrar extends CI_Controller {
             $verification_key = md5(rand());
             $encrypted_password = $this->encrypt->encode($this->input->post('password'));
             $data = array(
-                'nombreUsuario'  => $this->input->post('name'),
+                'nombreUsuario'  => $this->input->post('nombreUsuario'),
                 'email'  => $this->input->post('email'),
                 'password' => $encrypted_password,
                 'verification_key' => $verification_key,
@@ -45,17 +45,17 @@ class Registrar extends CI_Controller {
                 'apellido' => $this->input->post('apellido'),
                 'dni' => $this->input->post('dni'),
                 'telefono' => $this->input->post('telefono'),
-                'pasajeroFrecuente' => $this->input->post('pasajeroFrecuente'),
+                'pasajeroFrecuente' => $this->input->post('pasajerofrecuente'),
             );
             $id = $this->Register_model->insert($data);
             if($id > 0)
             {
                 $subject = "Please verify email for login";
                 $message = "
-                <p>Hi ".$this->input->post('user_name')."</p>
-                <p>This is email verification mail from TECNO-SOLUCIONES. For complete registration process and login into system. First you want to verify you email by click this <a href='".base_url()."index.php/registrar/verify_email/".$verification_key."'>link</a>.</p>
-                <p>Once you click this link your email will be verified and you can login into system.</p>
-                <p>Thanks,</p>
+                <p>Hola ".$this->input->post('user_name')."</p>
+                <p>Este es un mensaje de validacion de PASSAGESUSTEM. Para Completar el registro y poder Logearse en el sitema debe primero verificar su email Haciendo click en este: <a href='".base_url()."index.php/registrar/verify_email/".$verification_key."'>link</a>.</p>
+                <p>Al hacer click ingresara a la web y tendra su email verificado! para poder usar el sistema correctamente.</p>
+                <p>Muchas Gracias.</p>
                 ";
                 $config = array(
                     'protocol'  => 'smtp',
@@ -92,11 +92,11 @@ class Registrar extends CI_Controller {
             $verification_key = $this->uri->segment(3);
             if($this->Register_model->verify_email($verification_key))
             {
-                $data['message'] = '<h1 align="center">Your Email has been successfully verified, now you can login from <a href="'.base_url().'index.php/login">here</a></h1>';
+                $data['message'] = '<h1 align="center">Su email fue Validad Correctamente, puede continuar haciendo click <a href="'.base_url().'index.php/login">AQUI</a></h1>';
             }
             else
             {
-                $data['message'] = '<h1 align="center">Invalid Link</h1>';
+                $data['message'] = '<h1 align="center">LINK INVALIDO</h1>';
             }
             $this->load->view('email_verification', $data);
         }

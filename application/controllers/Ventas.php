@@ -31,6 +31,9 @@ class Ventas extends CI_Controller {
     }
     
     function Comprar($fecha,$idViaje,$idFrecuencia){
+
+
+        $pasajeroFrecuente = $this->session->userdata('pasajeroFrecuente');
         if (!empty($fecha) or !empty($idViaje) or !empty($idFrecuencia)) {
         $fechaviaje = $fecha;
         $fecha = explode("-",$fecha);
@@ -61,7 +64,12 @@ class Ventas extends CI_Controller {
         $data['puntos'] = $this->Pasaje_model->ObtenerPuntos();
 
         if ($hoy<$fechaViaje){
-            $this->load->view('venta/comprar.php', $data);
+            if ($pasajeroFrecuente == "SI"){
+                $this->load->view('venta/comprar.php', $data);
+            }else {
+                $this->load->view('venta/comprarnormal.php', $data);
+            }
+
         } else if($hoy>$fechaviaje){
             redirect("/");
         }
@@ -104,15 +112,12 @@ class Ventas extends CI_Controller {
             }
 
 
-            echo "<pre>";
-            print_r ($data['butacasCompradas']);
-            echo "</pre>";
 
 
             $this->load->model('Usuario_model');
             $this->Usuario_model->setDni($this->session->userdata('Dni'));
             $datosUsuario = $this->Usuario_model->obtenerDatosDni();
-            print_r($datosUsuario);
+
             require_once 'vendor/autoload.php';
 
             MercadoPago\SDK::setAccessToken("TEST-7666547261035560-061917-b3827db4841fb02755468af4d6bd24a1-134046859");
